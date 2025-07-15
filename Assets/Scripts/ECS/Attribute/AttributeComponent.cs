@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Unity.Mathematics.Geometry;
+using Math = System.Math;
 
 namespace ECS.Attribute
 {
@@ -9,7 +11,7 @@ namespace ECS.Attribute
 
         public double Get(Attribute attribute) => cachedValues.GetValueOrDefault(attribute, attribute.defaultValue);
 
-        public Dictionary<Attribute, List<AttributeModifier>> GetAll() => modifiers;
+        public Dictionary<Attribute, List<AttributeModifier>> GetAllModifiers() => modifiers;
 
         public void AddModifier(Attribute attribute, AttributeModifier modifier, bool doRecalculate = true)
         {
@@ -56,13 +58,13 @@ namespace ECS.Attribute
             {
                 switch (modifier.operation)
                 {
-                    case AttributeModifier.Operation.Add: value += modifier.value; break;
-                    case AttributeModifier.Operation.Multiply: muls *= modifier.value; break;
+                    case AttributeModifier.Operation.ADD: value += modifier.value; break;
+                    case AttributeModifier.Operation.MULTIPLY: muls *= modifier.value; break;
                 }
             }
 
             value *= muls;
-            cachedValues[attribute] = value;
+            cachedValues[attribute] = Math.Clamp(value, attribute.minValue, attribute.maxValue);
         }
     }
 }

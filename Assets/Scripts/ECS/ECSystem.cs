@@ -8,7 +8,7 @@ namespace ECS
         private static ECSystem instance;
         public static ECSystem Instance => instance ??= new ECSystem();
         
-        private Dictionary<GameObject, ComponentMap> data = new();
+        private readonly Dictionary<GameObject, ComponentMap> data = new();
         private ECSystem() {}
         
         public ComponentMap Get(GameObject gameObject)

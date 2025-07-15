@@ -13,8 +13,8 @@ namespace ECS.Attribute
     
         public enum Operation
         {
-            Add,
-            Multiply
+            ADD,
+            MULTIPLY
         }
     }
 }
