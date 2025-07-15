@@ -14,8 +14,8 @@ public class Tank : Entity
 
 
     private AttributeComponent attributes;
-    
-    void Start()
+
+    private void Start()
     {
         attributes = new AttributeComponent();
         components.Add(attributes);

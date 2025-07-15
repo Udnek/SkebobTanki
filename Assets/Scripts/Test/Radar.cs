@@ -1,10 +1,12 @@
 using UnityEngine;
 
-public class Radar : MonoBehaviour
+namespace Test
 {
-    
-    void Update()
+    public class Radar : MonoBehaviour
     {
-        transform.Rotate(Vector3.up, Time.deltaTime * 90f);
+        private void Update()
+        {
+            transform.Rotate(Vector3.up, Time.deltaTime * 90f);
+        }
     }
 }

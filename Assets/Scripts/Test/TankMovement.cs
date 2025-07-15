@@ -12,8 +12,8 @@ public class TankMovement : MonoBehaviour
     private float verticalInput;
     private float currentSpeed = 0f;
     private float currentRotation = 0f;
-    
-    void Update()
+
+    private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
