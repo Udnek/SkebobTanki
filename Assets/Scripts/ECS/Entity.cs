@@ -4,8 +4,8 @@ namespace ECS
 {
     public abstract class Entity : MonoBehaviour
     {
-        protected ComponentMap components;
+        public ComponentMap components {get; private set;}
 
-        public void Awake() => components = ECSystem.Instance.Get(gameObject);
+        public void Awake() => components = ECSystem.Instance.GetOrCreate(gameObject);
     }
 }
