@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 public class HitscanWeapon : MonoBehaviour
 {
@@ -8,9 +9,6 @@ public class HitscanWeapon : MonoBehaviour
     public float fireRange = 50f;
     public bool spreadEnabled = true;
     public float bulletSpreadFactor = 0.1f;
-
-    
-    private float timeReloaded;
     
     [SerializeField]
     private ParticleSystem muzzleFlash;
@@ -20,17 +18,31 @@ public class HitscanWeapon : MonoBehaviour
     private TrailRenderer bulletTrail;
     [SerializeField]
     public Transform firePoint;
+    [SerializeField]
+    private LayerMask layerMask;
+    
+    private float timeReloaded;
     
     void Update()
     {
         if (!Input.GetButton("Fire1") || !(Time.time > timeReloaded)) return;
+        
         timeReloaded = Time.time + 1/fireRate;
-        if (Physics.Raycast(firePoint.position, GetDirection(), out RaycastHit hit, fireRange))
+        TrailRenderer trail = Instantiate(bulletTrail, firePoint.position, Quaternion.identity);
+        Vector3 direction = GetDirection();
+        
+        if (Physics.Raycast(firePoint.position, direction, out RaycastHit hit, fireRange, layerMask))
         {
-            TrailRenderer trail = Instantiate(bulletTrail, firePoint.position, Quaternion.identity);
-            StartCoroutine(SpawnTrail(trail, hit));
+            Vector3 relativeHitPoint = hit.point - hit.transform.position;
+            Quaternion toHitRotation = Quaternion.FromToRotation(hit.transform.forward, hit.normal);
+            StartCoroutine(SpawnTrail(trail, hit, relativeHitPoint, toHitRotation));
             hit.rigidbody?.AddForce(-hit.normal * impactForce);
         }
+        else
+        {
+            StartCoroutine(SpawnTrail(trail, firePoint.position + direction * fireRange));
+        }
+        
         muzzleFlash.Play();
     }
 
@@ -50,19 +62,42 @@ public class HitscanWeapon : MonoBehaviour
 
     }
 
-    private IEnumerator SpawnTrail(TrailRenderer trail, RaycastHit hit)
+    private IEnumerator SpawnTrail(TrailRenderer trail, Vector3 trailEndPoint)
     {
-        float time = 0;
-        Vector3 startPosition = trail.transform.position;
-        while (time < 1)
+        Vector3 trailStartPoint = trail.transform.position;
+        float distance = Vector3.Distance(trailStartPoint, trailEndPoint);
+        float remainingDistance = distance;
+        
+        while (remainingDistance > 0)   
         {
-            trail.transform.position = Vector3.Lerp(startPosition, hit.point, time);
-            time += Time.deltaTime / trail.time;
+            trail.transform.position = Vector3.Lerp(trailStartPoint, trailEndPoint, 1 - remainingDistance / distance);
+            remainingDistance -= 1 / trail.time * Time.deltaTime;
 
             yield return null;
         }
+        trail.transform.position = trailEndPoint;
+        Destroy(trail.gameObject, trail.time);
+    }
+
+    private IEnumerator SpawnTrail(TrailRenderer trail, RaycastHit hit, Vector3 relativeHitPoint, Quaternion toHitRotation)
+    {
+        Vector3 trailStartPoint = trail.transform.position;
+        float distance = Vector3.Distance(trailStartPoint, hit.point);
+        float remainingDistance = distance;
+        while (remainingDistance > 0)   
+        {
+            trail.transform.position = Vector3.Lerp(trailStartPoint, hit.point, 1 - remainingDistance / distance);
+            remainingDistance -= 1 / trail.time * Time.deltaTime;
+
+            yield return null;
+        }
+
         trail.transform.position = hit.point;
-        Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+        ParticleSystem impactEffectInstance = Instantiate(impactEffect, 
+            hit.transform.position + relativeHitPoint,
+            Quaternion.LookRotation(toHitRotation * hit.transform.forward)
+            );
+        impactEffectInstance.transform.SetParent(hit.transform);
         
         Destroy(trail.gameObject, trail.time);
     }
