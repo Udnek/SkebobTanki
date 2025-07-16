@@ -80,7 +80,7 @@ report.xml
 Thumbs.db.meta
 
 # JetBrains
-/.idea/
+/.idea
 
 # Local files JUPITER
 /Assets/Local
@@ -104,3 +104,4 @@ fmod_editor.log
 
 /Assets/Plugins/FMOD/Cache/Editor.meta
 /UserSettings
+/Settings
