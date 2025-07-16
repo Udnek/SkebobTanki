@@ -3,7 +3,7 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class ReCalcCubeTexture : MonoBehaviour
 {
-    private Vector3 _currentScale;
+    private Vector3 currentScale;
 
     private void Start()
     {
@@ -17,10 +17,10 @@ public class ReCalcCubeTexture : MonoBehaviour
 
     public void Calculate()
     {
-        if (_currentScale == transform.localScale) return;
+        if (currentScale == transform.localScale) return;
         if (CheckForDefaultSize()) return;
 
-        _currentScale = transform.localScale;
+        currentScale = transform.localScale;
         var mesh = GetMesh();
         mesh.uv = SetupUvMap(mesh.uv);
         mesh.name = "Cube Instance";
@@ -52,9 +52,9 @@ public class ReCalcCubeTexture : MonoBehaviour
 
     private Vector2[] SetupUvMap(Vector2[] meshUVs)
     {
-        var width = _currentScale.x;
-        var depth = _currentScale.z;
-        var height = _currentScale.y;
+        var width = currentScale.x;
+        var depth = currentScale.z;
+        var height = currentScale.y;
 
         //Front
         meshUVs[2] = new Vector2(0, height);
@@ -97,7 +97,7 @@ public class ReCalcCubeTexture : MonoBehaviour
 
     private bool CheckForDefaultSize()
     {
-        if (_currentScale != Vector3.one) return false;
+        if (currentScale != Vector3.one) return false;
 
         var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
