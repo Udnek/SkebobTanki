@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 public class HitscanWeapon : MonoBehaviour
 {

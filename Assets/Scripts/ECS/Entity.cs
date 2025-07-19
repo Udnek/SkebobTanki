@@ -1,11 +1,7 @@
-using UnityEngine;
-
 namespace ECS
 {
-    public abstract class Entity : MonoBehaviour
+    public interface Entity
     {
-        public ComponentMap components {get; private set;}
-
-        public void Awake() => components = ECSystem.Instance.GetOrCreate(gameObject);
+        ComponentMap components {get;}
     }
 }

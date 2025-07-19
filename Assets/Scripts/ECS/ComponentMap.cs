@@ -5,11 +5,11 @@ namespace ECS
 {
     public class ComponentMap
     {
-        private List<CustomComponent> components = new();
+        private readonly List<CustomComponent> components = new();
         
         public T? Get<T>() where T : CustomComponent
         {
-            return components.Find(component => component is T) as T;
+            return (T?) components.Find(component => component is T);
         }
         
         public bool Has<T>() where T: CustomComponent => Get<T>() != null;

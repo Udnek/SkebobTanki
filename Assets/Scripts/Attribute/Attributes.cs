@@ -1,19 +1,20 @@
 using System.Collections.Generic;
-using Unity.Mathematics.Geometry;
+using UnityEngine;
 using Math = System.Math;
 
-namespace ECS.Attribute
+namespace Attribute
 {
-    public class AttributeComponent : CustomComponent
+    public class Attributes : MonoBehaviour
     {
-        private Dictionary<Attribute, List<AttributeModifier>> modifiers = new();
-        private Dictionary<Attribute, double> cachedValues = new();
+        private readonly Dictionary<AttributeType, List<AttributeModifier>> modifiers = new();
+        private readonly Dictionary<AttributeType, double> cachedValues = new();
+        private readonly Dictionary<AttributeType, double> baseValues = new();
 
-        public double Get(Attribute attribute) => cachedValues.GetValueOrDefault(attribute, attribute.defaultValue);
-
-        public Dictionary<Attribute, List<AttributeModifier>> GetAllModifiers() => modifiers;
-
-        public void AddModifier(Attribute attribute, AttributeModifier modifier, bool doRecalculate = true)
+        public double GetValue(AttributeType attribute) => cachedValues.GetValueOrDefault(attribute, GetBaseValue(attribute));
+        public double GetBaseValue(AttributeType attribute) => baseValues.GetValueOrDefault(attribute, attribute.defaultValue);
+        public void SetBaseValue(AttributeType attribute, double value) => baseValues[attribute] = value;
+        
+        public void AddModifier(AttributeType attribute, AttributeModifier modifier, bool doRecalculate = true)
         {
             var list = modifiers.GetValueOrDefault(attribute, null);
             if (list == null) {
@@ -24,7 +25,7 @@ namespace ECS.Attribute
             if (doRecalculate) Recalculate(attribute);
         }
 
-        public void RemoveModifier(Attribute attribute, AttributeModifier modifier, bool doRecalculate = true)
+        public void RemoveModifier(AttributeType attribute, AttributeModifier modifier, bool doRecalculate = true)
         {
             modifiers.TryGetValue(attribute, out var list);
             list?.Remove(modifier);
@@ -32,7 +33,7 @@ namespace ECS.Attribute
         }
         
         
-        public void AddAllModifiers(Dictionary<Attribute, List<AttributeModifier>> modifiers)
+        public void AddAllModifiers(Dictionary<AttributeType, List<AttributeModifier>> modifiers)
         {
             foreach (var pair in modifiers)
             {
@@ -41,7 +42,7 @@ namespace ECS.Attribute
             }
         }
 
-        public void RemoveAllModifiers(Dictionary<Attribute, List<AttributeModifier>> modifiers)
+        public void RemoveAllModifiers(Dictionary<AttributeType, List<AttributeModifier>> modifiers)
         {
             foreach (var pair in modifiers)
             {
@@ -50,9 +51,9 @@ namespace ECS.Attribute
             }
         }
         
-        private void Recalculate(Attribute attribute)
+        private void Recalculate(AttributeType attribute)
         {
-            var value = attribute.defaultValue;
+            var value = GetBaseValue(attribute);
             var muls = 1.0;
             foreach (var modifier in modifiers.GetValueOrDefault(attribute, new List<AttributeModifier>()))
             {

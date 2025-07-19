@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <attributeText>k__BackingField: {fileID: 0}
   <speedText>k__BackingField: {fileID: 0}
+  <tooltipPrefab>k__BackingField: {fileID: 3974065859502967122, guid: 6a4911c0d67186d46a94d32d38c38141, type: 3}
 --- !u!114 &-4180348295807642313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,13 +61,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <itemStackPrefab>k__BackingField: {fileID: 8053903831517776031, guid: c83200d8351f0c14693c9c6088f82961, type: 3}
+  <slotPrefab>k__BackingField: {fileID: 4581368831272795983, guid: ee8f1aa8a8726464dafe6e3051242a7d, type: 3}
   draggableLayer: {fileID: 0}
-  UIInventoryObject: {fileID: 0}
-  shopSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  currentSlots:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  uiInventoryObject: {fileID: 0}
+  tooltipLayer: {fileID: 0}
+  shopSlotsLayer: {fileID: 0}
+  currentSlotsLayer: {fileID: 0}

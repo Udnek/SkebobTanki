@@ -1,4 +1,4 @@
-namespace ECS.Attribute
+namespace Attribute
 {
     public class AttributeModifier
     { 

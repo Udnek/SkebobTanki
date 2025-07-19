@@ -1,55 +1,46 @@
 ﻿using Item;
 using JetBrains.Annotations;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Color = UnityEngine.Color;
 
 namespace UI
 {
-    public class InventorySlot : MonoBehaviour, IPointerClickHandler
+    public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [CanBeNull] public GameObject icon { get; private set; }
         [CanBeNull] public ItemStack item { get; private set; }
         [CanBeNull] private Image iconImage;
         
-        public bool IsEmpty => item is null;
+        public bool isEmpty => item is null;
         
         public void SetItem(ItemStack item)
         {
-            if (!IsEmpty) Clear(); 
+            if (!isEmpty) Clear(); 
             this.item = item;
-            var ic = Instantiate(InventoryManager.Instance.itemStackPrefab, transform, false);
+            var ic = Instantiate(InventoryManager.instance.itemStackPrefab, transform, false);
             icon = ic;
             iconImage = ic.GetComponent<Image>();
-            iconImage!.color = item!.type.Color;
-            InventoryManager.Instance.AddToDraggableLayer(ic);
-            Scope();
+            iconImage!.sprite = item.type.icon;
         }
         
-        public void Scope()
-        { 
-            if (!IsEmpty) iconImage!.color = item!.type.Color;
-        }
-        
-        public void Unscope()
+        public void Pickup()
         {
-            if (!IsEmpty) iconImage!.color = iconImage.color * new Color(1f, 1f, 1f, 0.5f);
+            if (isEmpty) return;
+            icon!.GetComponent<RectTransform>().sizeDelta *= new Vector2(1.2f, 1.2f);
         }
 
         public void Clear()
         {
-            if (IsEmpty) return;
+            if (isEmpty) return;
             Destroy(icon);
             icon = null;
             iconImage = null;
             item = null;
         }
         
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            InventoryManager.Instance.OnSlotClicked(this);
-        }
+        public void OnPointerClick(PointerEventData eventData) => InventoryManager.instance.OnSlotClicked(this);
+        public void OnPointerEnter(PointerEventData eventData) => InventoryManager.instance.OnSlotHovered(this);
+        public void OnPointerExit(PointerEventData eventData) => InventoryManager.instance.OnSlotUnhovered(this);
     }
 }

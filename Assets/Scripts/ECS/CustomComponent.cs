@@ -1,7 +1,4 @@
 namespace ECS
 {
-    public class CustomComponent
-    {
-        
-    }
+    public interface CustomComponent { }
 }

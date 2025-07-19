@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a0df08b6398248479c1dce78743e23c, type: 3}
   m_Name: BebraItem
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Bebra
-  <Color>k__BackingField: {r: 1, g: 0.510552, b: 0, a: 1}
+  <name>k__BackingField: Bebra
+  <description>k__BackingField: Zamn\nSigma description\n+30% edge rizz
+  <iconTexture>k__BackingField: {fileID: 2800000, guid: ca47e4c9672a19a46b8e3ae16175a14e, type: 3}
