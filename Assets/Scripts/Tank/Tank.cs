@@ -28,8 +28,8 @@ namespace Tank
             {
                 AddHitReceiverToCollidableChildren(childTransform);
                 if (!ShouldAddHitReceiver(childTransform)) continue;
-                childTransform.GetOrAddComponent<HitReceiver>().Listeners += 
-                    o => Debug.Log("HIT");
+                childTransform.GetOrAddComponent<HitReceiver>().Listeners +=
+                    hitEvent => GetComponent<Rigidbody>().AddForceAtPosition(hitEvent.direction * hitEvent.force, hitEvent.hit.point);
             }
         }
 
@@ -37,7 +37,7 @@ namespace Tank
 
         private void Update()
         {
-            UIManager.instance.attributeText.text = $"{health}/{attributes.GetValue(AttributeType.HEALTH)}";
+            // UIManager.instance.attributeText.text = $"{health}/{attributes.GetValue(AttributeType.HEALTH)}";
         }
     }
 }

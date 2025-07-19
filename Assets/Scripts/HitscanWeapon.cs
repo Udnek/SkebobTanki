@@ -1,4 +1,5 @@
 using System.Collections;
+using Tank;
 using UnityEngine;
 
 public class HitscanWeapon : MonoBehaviour
@@ -35,7 +36,7 @@ public class HitscanWeapon : MonoBehaviour
             Vector3 relativeHitPoint = hit.point - hit.transform.position;
             Quaternion toHitRotation = Quaternion.FromToRotation(hit.transform.forward, hit.normal);
             StartCoroutine(SpawnTrail(trail, hit, relativeHitPoint, toHitRotation));
-            hit.rigidbody?.AddForce(-hit.normal * impactForce);
+            hit.collider.GetComponent<HitReceiver>()?.Hit(new HitEvent(hit, impactForce, direction));
         }
         else
         {
