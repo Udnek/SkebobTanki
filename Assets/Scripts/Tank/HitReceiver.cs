@@ -5,11 +5,8 @@ namespace Tank
 {
     public class HitReceiver: MonoBehaviour
     {
-        public event Action<RaycastHit> Listeners;
+        public event Action<HitEvent> Listeners;
 
-        public void Hit(RaycastHit hit)
-        {
-            Listeners?.Invoke(hit);
-        }
+        public void Hit(HitEvent hit) => Listeners?.Invoke(hit);
     }
 }
