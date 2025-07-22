@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2056919474890931594}
   - component: {fileID: 3073703089011323820}
   - component: {fileID: -4180348295807642313}
+  - component: {fileID: 4733288299539926169}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -67,3 +68,21 @@ MonoBehaviour:
   tooltipLayer: {fileID: 0}
   shopSlotsLayer: {fileID: 0}
   currentSlotsLayer: {fileID: 0}
+--- !u!114 &4733288299539926169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3438974480638812372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177e95edcab64ede84bbe89684f83910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <TURRET>k__BackingField: {fileID: 11400000, guid: 32941fdee7345804286c36559af81646, type: 2}
+  <GUN_BARREL>k__BackingField: {fileID: 11400000, guid: 1b0ecef732fc19a429c42890a1c63e0e, type: 2}
+  <HULL>k__BackingField: {fileID: 11400000, guid: 899415e7d278c64449cdf9612eb3a261, type: 2}
+  <TRACKS>k__BackingField: {fileID: 11400000, guid: dbb923085e09e8147970b200e46c3a39, type: 2}
+  <DRUM>k__BackingField: {fileID: 11400000, guid: 091f466341309eb4999974cd7a2ec550, type: 2}
+  <RADAR>k__BackingField: {fileID: 11400000, guid: 09edd9ca00ac7ab4794a8159e0971bb1, type: 2}

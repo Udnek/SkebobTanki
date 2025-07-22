@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a0df08b6398248479c1dce78743e23c, type: 3}
+  m_Name: Hull
+  m_EditorClassIdentifier: 
+  <name>k__BackingField: Hull
+  <description>k__BackingField: 
+  <iconTexture>k__BackingField: {fileID: 2800000, guid: f1a3abfc0e3ebe04cb4d8d8d9fa31ecd, type: 3}
+  <extraSlots>k__BackingField: 5

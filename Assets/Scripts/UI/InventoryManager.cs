@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Inventory;
 using Item;
 using JetBrains.Annotations;
+using NUnit.Framework;
+using UI.Renderer;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 namespace UI
 {
@@ -16,15 +22,27 @@ namespace UI
         [SerializeField] private Transform draggableLayer;
         [SerializeField] private GameObject uiInventoryObject;
         [SerializeField] private Transform tooltipLayer;
-        [SerializeField] private GameObject shopSlotsLayer;
-        [SerializeField] private GameObject currentSlotsLayer;
+        
+        [field: SerializeField] public Transform shopSlotsLayer {get; private set;}
+        [field: SerializeField] public Transform playerSlotsLayer {get; private set;}
+        [field: SerializeField] public Transform backpackSlotsLayer {get; private set;}
 
-        private List<InventorySlot> shopSlots { get; } = new();
-        private List<InventorySlot> currentSlots { get; } = new();
-        
-        [CanBeNull] private InventorySlot currentlyMovingFromSlot;
-        
+        private float? slotSizeField;
+        public float slotSize
+        {
+            get
+            {
+                if (slotSizeField == null) 
+                    slotSizeField = slotPrefab.GetComponent<RectTransform>().rect.width;
+                return (float) slotSizeField;
+            }
+        }
+
+        private InventoryRenderer[] inventoryRenderers = Array.Empty<InventoryRenderer>();
+        [CanBeNull] public Slot currentlyMovingSlot { get; private set; }
         [CanBeNull] private Tooltip tooltipField;
+        
+
         [CanBeNull] public Tooltip tooltip
         {
             get => tooltipField;
@@ -36,110 +54,97 @@ namespace UI
         }
 
         public bool isOpened { get; private set; } = true;
-        
-        private InventoryManager() {}
-        
-        private void Awake() => instance = this;
 
-        private void Start()
+        [CanBeNull]
+        public Slot GetSlot(Inventory.Slot slot)
         {
-            var prefabWidth = slotPrefab.GetComponent<RectTransform>().rect.width;
-            Run(shopSlotsLayer,  shopSlots, 5);
-            Run(currentSlotsLayer,  currentSlots, Inventory.SIZE);
-
-            Close();
-            return;
-
-            void Run(GameObject layer, List<InventorySlot> slots, int amount)
-            {
-                for (int i = 0; i < amount; i++)
-                {
-                    var go = Instantiate(slotPrefab, layer.transform);
-                    go.GetComponent<RectTransform>().localPosition = new Vector3(i * prefabWidth, 0, 0);
-                    slots.Add(go.GetComponent<InventorySlot>()!);
-                }
-            }
+            return inventoryRenderers
+                .Select(renderer => renderer.GetSlot(slot))
+                .FirstOrDefault(s => s is not null);
         }
-
-        private void AddToDraggableLayer(GameObject go) => go.transform.SetParent(draggableLayer);
         
-        public void OnSlotClicked(InventorySlot slot)
+        public void AddToDraggableLayer(GameObject go) => go.transform.SetParent(draggableLayer);
+        
+        public void OnSlotClicked(Slot slot)
         {
+            if (!slot.slot.stillExists) return;
             // CLICKING ON EMPTY SLOT WITH EMPTY CURSOR
-            if (currentlyMovingFromSlot is null && slot.isEmpty) {}
-            // CLICKING ON EMPTY SLOT WITH FILLED CURSOR
-            else if (currentlyMovingFromSlot is not null && slot.isEmpty)
+            if (currentlyMovingSlot is null && slot.isEmpty) {}
+            // (SWAPPING)
+            else if (currentlyMovingSlot is not null)
             {
-                slot.SetItem(currentlyMovingFromSlot.item);
-                currentlyMovingFromSlot.Clear();
-                currentlyMovingFromSlot = null;
-            }
-            // CLICKING ON FILLED SLOT WITH FILLED CURSOR (SWAPPING)
-            else if (currentlyMovingFromSlot is not null && !slot.isEmpty)
-            {
-                var cache = currentlyMovingFromSlot.item;
-                currentlyMovingFromSlot.SetItem(slot.item);
-                slot.SetItem(cache);
-                currentlyMovingFromSlot = null;
+                slot.slot.Swap(currentlyMovingSlot.slot);
+                currentlyMovingSlot = null;
             }
             // CLICKING ON FILLED SLOT WITH EMPTY CURSOR
             else
             {
-                currentlyMovingFromSlot = slot;
+                currentlyMovingSlot = slot;
                 AddToDraggableLayer(slot.icon!);
                 slot.Pickup();
             }
         }
         
-        public void OnSlotHovered(InventorySlot slot)
+        public void OnSlotHovered(Slot slot)
         {
             if (slot.isEmpty) return;
             if (tooltip is not null) Destroy(tooltip);
             tooltip = Instantiate(UIManager.instance.tooltipPrefab, tooltipLayer, false).GetComponent<Tooltip>();
-            var item = slot.item!.type;
-            tooltip!.SetText(item.name + "\n\n" + item.description);
+            var item = slot.slot.item!.type;
+            if (string.IsNullOrEmpty(item.description)) tooltip!.SetText(item.name);
+            else tooltip!.SetText(item.name + "\n\n" + item.description);
         }
 
-        public void OnSlotUnhovered(InventorySlot slot) => tooltip = null;
+        public void OnSlotUnhovered(Slot slot) => tooltip = null;
+        
+        private void Awake() => instance = this;
 
+        private void Start()
+        {
+            isOpened = true;
+            Close();
+        }
+        
         private void Update()
         {
-            if (currentlyMovingFromSlot is null) return;
-            if (currentlyMovingFromSlot.isEmpty) return;
-            currentlyMovingFromSlot.icon!.transform.position = Input.mousePosition;
+            if (currentlyMovingSlot is null) return;
+            if (currentlyMovingSlot.isEmpty) return;
+            currentlyMovingSlot.icon!.transform.position = Input.mousePosition;
+        }
+        
+        public Slot CreateSlot(Inventory.Slot realSlot, int x, int y, Transform layer)
+        {
+            var go = Instantiate(slotPrefab, layer.transform);
+            var rectTransform = go.GetComponent<RectTransform>();
+            rectTransform.localPosition = new Vector3(x * slotSize, y*slotSize, 0);
+            var slot = go.GetComponent<Slot>()!;
+            slot.slot = realSlot;
+            return slot;
         }
 
-        public void Open(Inventory inventory)
+        public void Open(params InventoryRenderer[] renderers)
         {
             if (isOpened) return;
             isOpened = true;
+            inventoryRenderers = renderers;
+            foreach (var render in renderers) render.Open();
             uiInventoryObject.SetActive(true);
-
-            var items = inventory.GetItems();
-            for (var i = 0; i < Math.Min(items.Length, currentSlots.Count); i++)
-            {
-                var item = items[i];
-                var slot = currentSlots[i];
-                if (item is null) continue;
-                
-                slot.SetItem(item);
-            }
         }
 
         public void Close()
         {
             if (!isOpened) return;
+            foreach (var renderer in inventoryRenderers) renderer.Close();
+            inventoryRenderers = Array.Empty<InventoryRenderer>();
             isOpened = false;
-            foreach (var slot in shopSlots) slot.Clear();
-            foreach (var slot in currentSlots) slot.Clear();
             tooltip = null;
             uiInventoryObject.SetActive(false);
         }
 
-        public void Toggle(Inventory inventory)
+        public void Toggle(params InventoryRenderer[] renderers)
         {
             if (isOpened) Close();
-            else Open(inventory);
+            else Open(renderers);
         }
     }
 }
