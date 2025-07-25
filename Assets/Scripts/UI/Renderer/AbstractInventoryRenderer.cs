@@ -19,22 +19,25 @@ namespace UI.Renderer
 
         public virtual void Close()
         {
-            inventory = default;
+            inventory.Unsubscribe(this);
             foreach (var slot in slots.Values)
             {
                 slot.Clear();
                 Object.Destroy(slot.gameObject);
             }
         }
-        
-        public abstract void Open();
 
-        public void OnItemSet(Inventory.Slot slot, ItemStack oldItem, List<ItemStack> leftover)
+        public virtual void Open()
+        {
+            inventory.Subscribe(this);
+        }
+
+        public void OnItemSet(Inventory.Slot slot, ItemStack oldItem)
         {
             slots[slot].UpdateIcon();
         }
 
-        public void OnItemSwapped(Inventory.Slot thisSlot, Inventory.Slot withSlot, List<ItemStack> leftover)
+        public void OnItemSwapped(Inventory.Slot thisSlot, Inventory.Slot withSlot)
         {
             var manager = InventoryManager.instance;
             var withVisualSlot = manager.GetSlot(withSlot);
@@ -54,6 +57,7 @@ namespace UI.Renderer
                     thisVisualSlot.transform.position,
                     () =>
                     {
+                        thisVisualSlot.UpdateIcon();
                         var list = slotsToAppear.GetValueOrDefault(thisSlot, null);
                         if (list is null) return;
                         
@@ -75,5 +79,6 @@ namespace UI.Renderer
         }
 
         public abstract void OnSlotAdded(Inventory.Slot slot, Row row);
+        public void OnItemChanged(Inventory.Slot slot, ItemStack oldItem) { }
     }
 }

@@ -31,5 +31,10 @@ namespace Item
             }
         }
         private void Awake() => instance = this;
+
+        private void Start()
+        {
+            foreach (var type in all) type.Start();
+        }
     }
 }

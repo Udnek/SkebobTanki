@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 
 namespace UI
 {
+    // TODO USE ANIMATOR INSTEAD
     public class SmoothSizeChange : MonoBehaviour
     {
         private float time;

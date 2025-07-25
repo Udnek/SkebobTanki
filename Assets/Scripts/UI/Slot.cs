@@ -29,6 +29,7 @@ namespace UI
             set
             {
                 slotField = value;
+                gameObject.name = slot.type.name;
                 UpdateIcon();
             }
         }

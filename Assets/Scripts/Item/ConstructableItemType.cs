@@ -1,5 +1,7 @@
-using System.Collections.Generic;
+using System.Linq;
 using ECS;
+using Item.Components;
+using Tank.Parts;
 using UnityEngine;
 
 namespace Item
@@ -7,16 +9,20 @@ namespace Item
     [CreateAssetMenu(fileName = "ItemType", menuName = "Scriptable Objects/ItemType")]
     public class ConstructableItemType : ScriptableObject, ItemType
     {
-        public ComponentMap components { get; } = new();
-        
+        public ComponentMap<ItemType> components { get; } = new();
+        [field: SerializeField] public Part partPrefab {get; private set; }
         [field: SerializeField] public new string name { get; protected set; }
         [field: SerializeField] public string description { get; protected set; }
         [field: SerializeField] public Texture2D iconTexture { get; protected set; }
 
-        [field: SerializeField] public int extraSlots { get; protected set; }
-
         public Sprite icon => 
             Sprite.Create(iconTexture, new Rect(0f, 0f, iconTexture.width, iconTexture.height), Vector2.zero);
-        
+
+        public void Start()
+        {
+            if (partPrefab is null) return;
+            components.Add(new ExtraSlots(partPrefab.slots.Keys.ToArray()));
+            components.Add(new PhysicalPart(partPrefab));
+        }
     }
 }

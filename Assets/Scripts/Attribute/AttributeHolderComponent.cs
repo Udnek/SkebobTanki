@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using ECS;
+using Item;
 
 namespace Attribute
 {
-    public class AttributeHolderComponent : CustomComponent
+    public class AttributeHolderComponent : CustomComponent<ItemType>
     {
         public Dictionary<AttributeType, List<AttributeModifier>> modifiers { get; } = new(); 
         

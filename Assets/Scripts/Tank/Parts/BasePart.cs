@@ -2,7 +2,7 @@
 
 namespace Tank.Parts
 {
-    public class EmptyPart : Part
+    public class BasePart : Part
     {
         public int rotateAroundX;
         protected override void AddSlots(SlotConsumer consumer) { }

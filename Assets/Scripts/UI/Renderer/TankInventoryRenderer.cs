@@ -11,11 +11,11 @@ namespace UI.Renderer
         public TankInventoryRenderer(PlayerInventory inventory)
         {
             this.inventory = inventory;
-            inventory.listener = this;
         }
 
         public override void Open()
         {
+            base.Open();
             var manager = InventoryManager.instance;
             for (var rowIndex = 0; rowIndex < inventory!.rows.Length; rowIndex++)
             {
@@ -35,12 +35,7 @@ namespace UI.Renderer
                 slots.Add(slot, manager.CreateSlot(slot, index, 0, manager.backpackSlotsLayer));
             }
         }
-
-        public override void Close()
-        {
-            inventory.listener = null;
-            base.Close();
-        }
+        
         
         public override void OnSlotAdded(Inventory.Slot slot, Row row)
         {

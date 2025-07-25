@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Item
 {
-    public interface ItemType : Entity{
-        
+    public interface ItemType : Entity<ItemType>{
         string name { get; }
         string description { get; }
         Sprite icon { get; }
-        int extraSlots { get; }
+
+        public void Start();
     }
 }

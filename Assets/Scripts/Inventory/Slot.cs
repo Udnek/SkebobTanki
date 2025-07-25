@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Item;
+using Item.Components;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using UI;
@@ -8,48 +9,51 @@ namespace Inventory
 {
     public class Slot
     {
-        protected readonly Inventory inventory;
+        public readonly Inventory inventory;
 
+        public readonly SlotType type;
+
+        [CanBeNull] public Slot provider;
+        
         public bool stillExists = true;
-        [CanBeNull] public ItemStack item { get; protected set; }
-        public Slot(Inventory inventory) => this.inventory = inventory;
+        [CanBeNull] public ItemStack item { get; private set; }
+        public Slot(Inventory inventory, SlotType type)
+        {
+            this.inventory = inventory;
+            this.type = type;
+        }
 
         public void Swap(Slot withSlot)
         {
-            var leftover = SwapAndGetLeftover(withSlot);
-            if (stillExists) inventory.OnItemSwapped(this, withSlot, leftover);
-            if (withSlot.stillExists) withSlot.inventory.OnItemSwapped(withSlot, this, leftover);
+            if (withSlot == this) return;
+            var thisItem = item;
+            var withItem = withSlot.item;
+            withSlot.item = thisItem;
+            InternalSet(withItem, false);
+            if (withSlot.stillExists) withSlot.InternalSet(thisItem, false);
+            
+            if (stillExists) inventory.OnItemSwapped(this, withSlot);
+            if (withSlot.stillExists) withSlot.inventory.OnItemSwapped(withSlot, this);
         }
 
         public void Set(ItemStack newItem)
         {
-            inventory.OnItemSet(this, item, SetAndGetLeftover(newItem, true));
+            var oldItem = item;
+            InternalSet(newItem, true);
+            inventory.OnItemSet(this, oldItem);
         }
 
         public void SetNoLeftOver(ItemStack newItem)
         {
-            SetAndGetLeftover(newItem, false);
-            inventory.OnItemSet(this, item, new List<ItemStack>());
+            var oldItem = item;
+            InternalSet(newItem, false);
+            inventory.OnItemSet(this, oldItem);
         }
         
-        protected virtual List<ItemStack> SwapAndGetLeftover(Slot withSlot)
+        protected virtual void InternalSet([CanBeNull] ItemStack newItem, bool leftoverThisItem)
         {
-            var thisItem = item;
-            var thatItem = withSlot.item;
-            withSlot.item = null;
-            var leftover = SetAndGetLeftover(thatItem, false);
-            if (withSlot.stillExists) leftover.AddRange(withSlot.SetAndGetLeftover(thisItem, false));
-            else leftover.Add(thisItem);
-            return leftover;
-        }
-
-        protected virtual List<ItemStack> SetAndGetLeftover([CanBeNull] ItemStack newItem, bool includeThisItemInLeftover)
-        {
-            var oldItem = item;
+            if (leftoverThisItem && item != null) inventory.TakeLeftover(this);
             item = newItem;
-            var leftOver = new List<ItemStack>();
-            if (oldItem != null && includeThisItemInLeftover) leftOver.Add(oldItem);
-            return leftOver;
         }
     }
 }

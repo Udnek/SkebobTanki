@@ -1,7 +1,7 @@
 namespace ECS
 {
-    public interface Entity
+    public interface Entity<T>
     {
-        ComponentMap components {get;}
+        ComponentMap<T> components { get; }
     }
 }

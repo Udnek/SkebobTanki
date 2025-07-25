@@ -1,11 +1,10 @@
+using ECS;
+
 namespace Item
 {
-    public class ItemStack
+    public class ItemStack : AbstractEntity<ItemStack>
     {
-        
         public readonly ItemType type;
         public ItemStack(ItemType type) => this.type = type;
-        
-        public ItemStack Clone() => new(type);
     }
 }

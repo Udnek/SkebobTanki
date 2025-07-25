@@ -10,11 +10,11 @@ namespace UI.Renderer
         public ShopInventoryRenderer(ShopInventory inventory)
         {
             this.inventory = inventory;
-            inventory.listener = this;
         }
         
         public override void Open()
         {
+            base.Open();
             for (var index = 0; index < inventory.slots.Length; index++)
             {
                 var slot = inventory.slots[index];
@@ -23,11 +23,5 @@ namespace UI.Renderer
         }
 
         public override void OnSlotAdded(Inventory.Slot slot, Row row) { }
-
-        public override void Close()
-        {
-            inventory = null;
-            base.Close();
-        }
     }
 }

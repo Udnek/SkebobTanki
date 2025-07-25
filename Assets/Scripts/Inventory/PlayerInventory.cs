@@ -2,54 +2,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Item;
+using Item.Components;
 using JetBrains.Annotations;
 using Unity.Collections;
 using UnityEngine;
 
 namespace Inventory
 {
-    public class PlayerInventory : MonoBehaviour, Inventory
+    public class PlayerInventory : Inventory
     {
-        public InventoryListener listener;
-        public Row hullSlots { get; }
-        public Row turretSlots { get; }
+        public Row hull { get; }
+        public Row turret { get; }
         public Slot[] backpack {get; } = new Slot[8];
-        public Row[] rows => new[]{ hullSlots, turretSlots };
-        
+        public Row[] rows => new[]{ hull, turret };
 
         public PlayerInventory()
         {
-            hullSlots = new Row(this);
-            turretSlots = new Row(this);
+            hull = new Row(this, SlotType.HULL);
+            turret = new Row(this, SlotType.TOP);
+            turret.main.provider = hull.main;
             for (var i = 0; i < backpack.Length; i++)
             {
-                backpack[i] = new Slot(this);
+                backpack[i] = new Slot(this, SlotType.BACKPACK);
             }
         }
         
-        public void OnItemSet(Slot slot, ItemStack oldItem, List<ItemStack> leftover)
-        {
-            AddToBackpack(leftover);
-            listener?.OnItemSet(slot, oldItem, leftover);
-        }
+        public override void TakeLeftover(Slot slot) => AddToBackpack(slot);
 
-        public void OnItemSwapped(Slot thisSlot, Slot withSlot, List<ItemStack> leftover)
+        private void AddToBackpack(Slot slot)
         {
-            AddToBackpack(leftover);
-            listener?.OnItemSwapped(thisSlot, withSlot, leftover);
-        }
-
-        private void AddToBackpack(List<ItemStack> items)
-        {
+            if (slot.item == null) return;
             foreach (var backSlot in backpack)
             {
-                if (items.Count == 0) break;
                 if (backSlot.item != null) continue;
-                backSlot.Set(items.Pop());
+                backSlot.Swap(slot);
+                return;
             }
+            slot.SetNoLeftOver(null);
         }
-
-        public void OnSlotRemoved(Slot slot, Row row) => listener?.OnSlotRemoved(slot, row);
-        public void OnSlotAdded(Slot slot, Row row) => listener?.OnSlotAdded(slot, row);
     }
 }

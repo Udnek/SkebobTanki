@@ -1,7 +1,8 @@
 namespace ECS
 {
-    public class AbstractEntity : Entity
+    public class AbstractEntity<THolder> : Entity<THolder>
     {
-        public ComponentMap components { get; } = new();
+        private ComponentMap<THolder> componentsField = new();
+        public ComponentMap<THolder> components => componentsField ??= new ComponentMap<THolder>();
     }
 }
