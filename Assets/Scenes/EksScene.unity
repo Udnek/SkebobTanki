@@ -336,7 +336,7 @@ Terrain:
   m_GameObject: {fileID: 613952440}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: 4832667f88e4c7149a2dee332a39f7e3, type: 2}
+  m_TerrainData: {fileID: 0}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
@@ -422,8 +422,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1380332411}
-  - component: {fileID: 1380332410}
-  - component: {fileID: 1380332412}
   m_Layer: 0
   m_Name: turret
   m_TagString: Untagged
@@ -431,25 +429,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1380332410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1380332408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a0c477e21b507542b69800eab49d0c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gun: {fileID: 6496219381807178592}
-  elevationSpeed: 2
-  maxElevationAngle: 20
-  maxDepressionAngle: -45
-  smoothTime: 0.1
-  mouseSensitivity: 2
-  lockCursor: 1
 --- !u!4 &1380332411
 Transform:
   m_ObjectHideFlags: 0
@@ -466,20 +445,6 @@ Transform:
   - {fileID: 8616923847081210636}
   m_Father: {fileID: 543450651638958680}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1380332412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1380332408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24dd26c895fd5ed4ca56a0b71ec11bb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationSpeed: 30
-  rotationSmoothing: 10
 --- !u!1 &1498315499
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,11 +699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ab1505d28e3c542a1ca4aadb236225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  rotationSpeed: 45
-  acceleration: 2
-  deceleration: 4
-  rotationAcceleration: 90
 --- !u!4 &93600063442719405
 Transform:
   m_ObjectHideFlags: 0
