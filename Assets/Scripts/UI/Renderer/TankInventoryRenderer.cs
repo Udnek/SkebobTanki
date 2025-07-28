@@ -17,15 +17,16 @@ namespace UI.Renderer
         {
             base.Open();
             var manager = InventoryManager.instance;
-            for (var rowIndex = 0; rowIndex < inventory!.rows.Length; rowIndex++)
+            
+            slots.Add(inventory.hullSlot, manager.CreateSlot(inventory.hullSlot, 0, 0, manager.playerSlotsLayer));
+            
+            for (var rowIndex = 0; rowIndex < inventory!.storageRows.Count; rowIndex++)
             {
-                var row = inventory.rows[rowIndex];
-                
-                slots.Add(row.main, manager.CreateSlot(row.main, 0, rowIndex, manager.playerSlotsLayer));
-                for (var extraIndex = 0; extraIndex < row.extra.Length; extraIndex++)
+                var row = inventory.storageRows[rowIndex];
+                for (var slotIndex = 0; slotIndex < row.slots.Length; slotIndex++)
                 {
-                    var slot = row.extra[extraIndex];
-                    slots.Add(slot, manager.CreateSlot(slot, extraIndex + 1, rowIndex, manager.playerSlotsLayer));
+                    var slot = row.slots[slotIndex];
+                    slots.Add(slot, manager.CreateSlot(slot, slotIndex + 1, -rowIndex, manager.playerSlotsLayer));
                 }
             }
 
@@ -35,24 +36,39 @@ namespace UI.Renderer
                 slots.Add(slot, manager.CreateSlot(slot, index, 0, manager.backpackSlotsLayer));
             }
         }
-        
-        
-        public override void OnSlotAdded(Inventory.Slot slot, Row row)
+
+        public override void OnRowRemoved(StorageRow toRemoveRow)
+        {
+            foreach (var slot in toRemoveRow.slots)
+            {
+                Object.Destroy(slots[slot].gameObject);
+                slots.Remove(slot);
+            }
+
+            for (var rowI = 0; rowI < inventory.storageRows.Count; rowI++)
+            {
+                var row = inventory.storageRows[rowI];
+                foreach (var slot in row.slots)
+                {
+                    var visualSlot = slots[slot];
+                    var pos = visualSlot.transform.localPosition;
+                    pos.y = -rowI * InventoryManager.instance.slotSize;
+                    SmoothMover.RunLocal(visualSlot.gameObject, 1, pos);
+                }
+            }
+        }
+
+        public override void OnRowAdded(StorageRow row)
         {
             var manager = InventoryManager.instance;
-            for (var i = 0; i < inventory!.rows.Length; i++)
+            int y = -inventory.storageRows.Count+1;
+            for (var i = 0; i < row.slots.Length; i++)
             {
-                var currentRow = inventory.rows[i];
-                if (currentRow != row) continue;
-                for (var j = 0; j < currentRow.extra.Length; j++)
-                {
-                    if (currentRow.extra[j] != slot) continue;
-                    var createdSlot = manager.CreateSlot(slot, j + 1, i, manager.playerSlotsLayer);
-                    createdSlot.transform.localScale = new Vector3();
-                    slots.Add(slot, createdSlot);
-                    slotsToAppear.GetOrAdd(currentRow.main, new List<Slot>()).Add(createdSlot);
-                    return;
-                }
+                var slot = row.slots[i];
+                var createdSlot = manager.CreateSlot(slot, i + 1, y, manager.playerSlotsLayer);
+                createdSlot.transform.localScale = new Vector3();
+                slots.Add(slot, createdSlot);
+                slotsToAppear.GetOrAdd(row.parent, new List<Slot>()).Add(createdSlot);
             }
         }
     }

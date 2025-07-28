@@ -26,11 +26,8 @@ namespace Tank
             components.Add(inventory);
             
             attributes = gameObject.GetOrAddComponent<Attributes>();
-            AddHitReceiverToCollidableObject(transform);
         }
-
-
-
+        
         private void Start()
         {
             attributes = gameObject.GetOrAddComponent<Attributes>();
@@ -61,16 +58,23 @@ namespace Tank
                 var createdPart = slot.item.components.GetOrAdd(() => new CreatedPart());
                 var part = Instantiate(newPhysicalPart.prefab, transform).GetComponent<Part>();
                 createdPart.script = part;
+                OnPartSet(part);
             }
             else {
-                var providerPart = slot.provider?.item?.components?.Get<CreatedPart>()?.script;
+                var providerPart = slot.parent?.item?.components?.Get<CreatedPart>()?.script;
                 if (providerPart == null) return;
                 var position = providerPart.slots.GetValueOrDefault(slot.type, null);
                 if (position is null) return;
                 var part = Instantiate(newPhysicalPart.prefab, position).GetComponent<Part>();
                 part.ApplyRotation();
                 slot.item.components.GetOrAdd(() => new CreatedPart()).script = part;
+                OnPartSet(part);
             }
+        }
+
+        protected void OnPartSet(Part part)
+        {
+            AddHitReceiverToCollidableObject(part.transform);
         }
 
         
@@ -83,7 +87,7 @@ namespace Tank
 
         private void Update()
         {
-            // UIManager.instance.attributeText.text = $"{health}/{attributes.GetValue(AttributeType.HEALTH)}";
+            UIManager.instance.attributeText.text = $"{inventory.storageRows.Count}";
         }
 
         

@@ -21,7 +21,8 @@ namespace Item
         public void Start()
         {
             if (partPrefab is null) return;
-            components.Add(new ExtraSlots(partPrefab.slots.Keys.ToArray()));
+            if (partPrefab.slots.Count > 0) 
+                components.Add(new ExtraSlots(partPrefab.slots.Keys.ToArray()));
             components.Add(new PhysicalPart(partPrefab));
         }
     }

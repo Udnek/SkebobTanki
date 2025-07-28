@@ -22,6 +22,7 @@ namespace UI.Renderer
             }
         }
 
-        public override void OnSlotAdded(Inventory.Slot slot, Row row) { }
+        public override void OnRowAdded(StorageRow row) {}
+        public override void OnRowRemoved(StorageRow row){}
     }
 }

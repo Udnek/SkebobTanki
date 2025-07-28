@@ -1,21 +1,23 @@
-﻿using System;
-using Item.Components;
-using Tank.Parts;
+﻿using Item.Components;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace Tank
+namespace Tank.Parts
 {
     public class Hull : BasePart
     {
-        [field: SerializeField]
-        public Transform tracksPosition { get; private set; }
-        [field: SerializeField]
-        public Transform turretPosition { get; private set; }
+        public Transform bottomPosition;
+        public Transform topPosition;
+        public Transform leftPosition;
+        public Transform rightPosition;
+        
 
         protected override void AddSlots(SlotConsumer consumer)
         {
-            consumer(SlotType.BOTTOM, tracksPosition);
-            consumer(SlotType.TOP, turretPosition);
+            consumer(SlotType.BOTTOM, bottomPosition);
+            consumer(SlotType.TOP, topPosition);
+            consumer(SlotType.LEFT, leftPosition);
+            consumer(SlotType.RIGHT, rightPosition);
         }
     }
 }

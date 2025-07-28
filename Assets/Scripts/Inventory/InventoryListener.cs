@@ -9,8 +9,8 @@ namespace Inventory
     {
         void OnItemSet(Slot slot, [CanBeNull] ItemStack oldItem);
         void OnItemSwapped(Slot thisSlot, Slot withSlot);
-        void OnSlotRemoved(Slot slot, Row row);
-        void OnSlotAdded(Slot slot, Row row);
+        void OnRowRemoved(StorageRow row);
+        void OnRowAdded(StorageRow row);
         void OnItemChanged(Slot slot, [CanBeNull] ItemStack oldItem);
     }
 }

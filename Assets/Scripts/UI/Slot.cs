@@ -22,18 +22,23 @@ namespace UI
 
         [CanBeNull] private Image iconImage;
         
-        private Inventory.Slot slotField;
+        private Inventory.Slot _SlotField;
         public Inventory.Slot slot
         {
-            get => slotField;
+            get => _SlotField;
             set
             {
-                slotField = value;
+                _SlotField = value;
                 gameObject.name = slot.type.name;
                 UpdateIcon();
             }
         }
         public bool isEmpty => slot.item is null;
+
+        public void ResetIconPosition()
+        {
+            if (icon != null) icon.transform.localPosition = Vector3.zero;
+        }
         
         public void UpdateIcon()
         {

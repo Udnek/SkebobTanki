@@ -8,17 +8,17 @@ namespace Inventory
     {
         public delegate void ItemSet(Slot slot, [CanBeNull] ItemStack oldItem);
         public delegate void ItemSwapped(Slot thisSlot, Slot withSlot);
-        public delegate void SlotRemoved(Slot slot, Row row);
-        public delegate void SlotAdded(Slot slot, Row row);
+        public delegate void RowRemoved(StorageRow row);
+        public delegate void RowAdded(StorageRow row);
         public delegate void ItemChanged(Slot slot, [CanBeNull] ItemStack oldItem);
         
         public event ItemSet onItemSet;
         public event ItemSwapped onItemSwapped;
-        public event SlotRemoved onSlotRemoved;
-        public event SlotAdded onSlotAdded;
+        public event RowRemoved onRowRemoved;
+        public event RowAdded onRowAdded;
         public event ItemChanged onItemChanged;
         
-        public virtual void OnItemSet(Slot slot, [CanBeNull] ItemStack oldItem)
+        public virtual void OnItemSet(Slot slot, ItemStack oldItem)
         {
             onItemSet?.Invoke(slot, oldItem);
             onItemChanged?.Invoke(slot, oldItem);
@@ -30,16 +30,16 @@ namespace Inventory
             onItemChanged?.Invoke(thisSlot, withSlot.item);
         }
 
-        public virtual void OnSlotRemoved(Slot slot, Row row) => onSlotRemoved?.Invoke(slot, row);
-        public virtual void OnSlotAdded(Slot slot, Row row) => onSlotAdded?.Invoke(slot, row);
+        public virtual void OnRowRemoved(StorageRow row) => onRowRemoved?.Invoke(row);
+        public virtual void OnRowAdded(StorageRow row) => onRowAdded?.Invoke(row);
         public void OnItemChanged(Slot slot, ItemStack oldItem) { }
 
         public void Subscribe(InventoryListener listener)
         {
             onItemSet += listener.OnItemSet;
             onItemSwapped += listener.OnItemSwapped;
-            onSlotAdded += listener.OnSlotAdded;
-            onSlotRemoved += listener.OnSlotRemoved;
+            onRowAdded += listener.OnRowAdded;
+            onRowRemoved += listener.OnRowRemoved;
             onItemChanged += listener.OnItemChanged;
         }
 
@@ -47,8 +47,8 @@ namespace Inventory
         {
             onItemSet -= listener.OnItemSet;
             onItemSwapped -= listener.OnItemSwapped;
-            onSlotAdded -= listener.OnSlotAdded;
-            onSlotRemoved -= listener.OnSlotRemoved;
+            onRowAdded -= listener.OnRowAdded;
+            onRowRemoved -= listener.OnRowRemoved;
             onItemChanged -= listener.OnItemChanged;
         }
 

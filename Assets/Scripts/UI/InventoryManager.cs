@@ -32,8 +32,7 @@ namespace UI
         {
             get
             {
-                if (slotSizeField == null) 
-                    slotSizeField = slotPrefab.GetComponent<RectTransform>().rect.width;
+                slotSizeField ??= slotPrefab.GetComponent<RectTransform>().rect.width;
                 return (float) slotSizeField;
             }
         }
@@ -55,8 +54,7 @@ namespace UI
 
         public bool isOpened { get; private set; } = true;
 
-        [CanBeNull]
-        public Slot GetSlot(Inventory.Slot slot)
+        [CanBeNull] public Slot GetSlot(Inventory.Slot slot)
         {
             return inventoryRenderers
                 .Select(renderer => renderer.GetSlot(slot))
@@ -73,7 +71,12 @@ namespace UI
             // (SWAPPING)
             else if (currentlyMovingSlot is not null)
             {
-                slot.slot.Swap(currentlyMovingSlot.slot);
+                if (currentlyMovingSlot == slot)
+                {
+                    slot.UpdateIcon();
+                    slot.ResetIconPosition();
+                }
+                else slot.slot.Swap(currentlyMovingSlot.slot);
                 currentlyMovingSlot = null;
             }
             // CLICKING ON FILLED SLOT WITH EMPTY CURSOR
@@ -116,7 +119,7 @@ namespace UI
         {
             var go = Instantiate(slotPrefab, layer.transform);
             var rectTransform = go.GetComponent<RectTransform>();
-            rectTransform.localPosition = new Vector3(x * slotSize, y*slotSize, 0);
+            rectTransform.localPosition = new Vector3(x*slotSize, y*slotSize, 0);
             var slot = go.GetComponent<Slot>()!;
             slot.slot = realSlot;
             return slot;

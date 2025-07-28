@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using ECS;
+using Item.Components;
 
-namespace Item.Components
+namespace Item
 {
     public class ExtraSlots: CustomComponent<ItemType>
     {
@@ -9,6 +10,7 @@ namespace Item.Components
         
         public ExtraSlots(params SlotType[] slots)
         {
+            if (slots.Length == 0) throw new ArgumentException("slots cannot be empty!");
             this.slots = slots;
         }
     }
