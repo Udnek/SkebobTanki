@@ -1,23 +1,22 @@
-using Attribute;
 using Inventory;
-using Item;
 using UI;
 using UI.Renderer;
 using UnityEngine;
 
-public class TestTank : MonoBehaviour
+namespace Test
 {
-    
-    private bool invPressed;
-    private void Update()
+    public class TestTank : MonoBehaviour
     {
-        if (!invPressed && Input.GetKeyDown(KeyCode.E))
+        private Controls controls;
+        
+        private void Awake()
         {
-            invPressed = true;
-            InventoryManager.instance.Toggle(
-                new ShopInventoryRenderer(new ShopInventory()), 
-                new TankInventoryRenderer(GetComponent<Tank.Tank>().components.Get<PlayerInventory>()));
+            controls = new Controls();
+            controls.Player.Inventory.Enable();
+            controls.Player.Inventory.performed += (context) => InventoryManager.instance.Toggle(
+                new ShopInventoryRenderer(new ShopInventory()),
+                new TankInventoryRenderer(GetComponent<Tank.Tank>().components.Get<PlayerInventory>())
+            );
         }
-        else invPressed = false;
     }
 }
