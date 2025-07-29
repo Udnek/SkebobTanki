@@ -33,6 +33,7 @@ namespace Tank
             attributes = gameObject.GetOrAddComponent<Attributes>();
             attributes.SetBaseValue(AttributeType.HEALTH, 10);
             health = attributes.GetValue(AttributeType.HEALTH);
+            inventory.hullSlot.Set(new ItemStack(ItemManager.instance.HULL));
         }
 
         protected void AddHitReceiverToCollidableObject(Transform parent)
