@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Item;
+﻿using Item;
 using JetBrains.Annotations;
 
 namespace Inventory

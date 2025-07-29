@@ -75,6 +75,7 @@ namespace Tank
         protected void OnPartSet(Part part)
         {
             AddHitReceiverToCollidableObject(part.transform);
+            part.tank = this;
         }
 
         

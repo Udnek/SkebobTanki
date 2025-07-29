@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Item;
-using Item.Components;
-using JetBrains.Annotations;
-using UnityEngine;
+﻿using Item;
 
 namespace Inventory
 {

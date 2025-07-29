@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Inventory;
-using Item;
 using JetBrains.Annotations;
-using NUnit.Framework;
 using UI.Renderer;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Object = UnityEngine.Object;
 
 namespace UI
 {

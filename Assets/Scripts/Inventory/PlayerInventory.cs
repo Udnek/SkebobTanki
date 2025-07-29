@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Item.Components;
-using Unity.Collections;
-using UnityEngine;
 
 namespace Inventory
 {

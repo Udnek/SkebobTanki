@@ -1,7 +1,6 @@
 ﻿using Item;
 using Item.Components;
 using JetBrains.Annotations;
-using UnityEngine;
 
 namespace Inventory
 {

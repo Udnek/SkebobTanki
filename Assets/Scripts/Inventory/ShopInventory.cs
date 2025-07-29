@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Item;
+﻿using Item;
 using Item.Components;
-using NUnit.Framework;
 
 namespace Inventory
 {

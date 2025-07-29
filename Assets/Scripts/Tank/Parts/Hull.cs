@@ -1,6 +1,5 @@
 ﻿using Item.Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Tank.Parts
 {

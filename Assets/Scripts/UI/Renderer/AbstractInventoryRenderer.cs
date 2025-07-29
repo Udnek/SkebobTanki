@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using Inventory;
 using Item;
-using JetBrains.Annotations;
-using NUnit.Framework;
 using UnityEngine;
 
 namespace UI.Renderer

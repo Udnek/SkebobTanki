@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Item.Components;
-using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Tank.Parts
@@ -10,8 +7,10 @@ namespace Tank.Parts
     public abstract class Part : MonoBehaviour
     {
         public delegate void SlotConsumer(SlotType slot, Transform position);
-        public Dictionary<SlotType, Transform> slots { get; } = new();
 
+        public Tank tank { get; set; }
+
+        public Dictionary<SlotType, Transform> slots { get; } = new();
         protected abstract void AddSlots(SlotConsumer consumer);
         public abstract void ApplyRotation();
 
