@@ -49,26 +49,26 @@ namespace Tank
 
         private void OnInventoryChanged(Slot slot, ItemStack oldItem, bool removeOld)
         {
-            if (removeOld) oldItem?.components?.Get<CreatedPart>()?.Destroy();
+            if (removeOld) oldItem?.components?.Get<InitiatedPart>()?.Destroy();
             if (slot.item is null) return;
-            slot.item.components.Get<CreatedPart>()?.Destroy();
-            var newPhysicalPart = slot.item.type.components.Get<PhysicalPart>();
+            slot.item.components.Get<InitiatedPart>()?.Destroy();
+            var newPhysicalPart = slot.item.type.components.Get<PartPrefab>();
             if (newPhysicalPart == null) return;
             if (slot.type == SlotType.HULL)
             {
-                var createdPart = slot.item.components.GetOrAdd(() => new CreatedPart());
+                var initiatedPart = slot.item.components.GetOrAdd(() => new InitiatedPart());
                 var part = Instantiate(newPhysicalPart.prefab, transform).GetComponent<Part>();
-                createdPart.script = part;
+                initiatedPart.script = part;
                 OnPartSet(part);
             }
             else {
-                var providerPart = slot.parent?.item?.components?.Get<CreatedPart>()?.script;
+                var providerPart = slot.parent?.item?.components?.Get<InitiatedPart>()?.script;
                 if (providerPart == null) return;
                 var position = providerPart.slots.GetValueOrDefault(slot.type, null);
                 if (position is null) return;
                 var part = Instantiate(newPhysicalPart.prefab, position).GetComponent<Part>();
+                slot.item.components.GetOrAdd(() => new InitiatedPart()).script = part;
                 part.ApplyRotation();
-                slot.item.components.GetOrAdd(() => new CreatedPart()).script = part;
                 OnPartSet(part);
             }
         }

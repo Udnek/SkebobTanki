@@ -29,11 +29,10 @@ namespace Item
                 return items;
             }
         }
-        private void Awake() => instance = this;
-
-        private void Start()
+        private void Awake()
         {
-            foreach (var type in all) type.Start();
+            instance = this;
+            foreach (var type in all) type.Awake();
         }
     }
 }

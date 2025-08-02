@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Item
 {
-    public class CreatedPart : CustomComponent<ItemStack>
+    public class InitiatedPart : CustomComponent<ItemStack>
     {
         [CanBeNull]
         public Part script { get; set; }

@@ -8,6 +8,6 @@ namespace Item
         string description { get; }
         Sprite icon { get; }
 
-        public void Start();
+        public void Awake();
     }
 }
