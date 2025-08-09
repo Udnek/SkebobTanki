@@ -3,7 +3,7 @@
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager instance { get; private set; }
-
-    // TODO: PUT MAIN CAMERA
+    
+    public Tank.Tank player { get; set; }
     private void Awake() => instance = this;
 }

@@ -96,7 +96,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3235686028801048729}
   m_Layer: 0
-  m_Name: turret
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -456,5 +456,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b327c7f03e24fa1804c780a8c4375ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <modelToOutline>k__BackingField: {fileID: 5763042327857096120}
   rotateAroundX: 0
   <barrelPosition>k__BackingField: {fileID: 2328754128491974824}

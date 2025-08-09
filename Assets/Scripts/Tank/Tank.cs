@@ -1,12 +1,15 @@
+using System;
 using System.Collections.Generic;
+using Ability;
 using Attribute;
 using ECS;
 using Inventory;
 using Item;
 using Item.Components;
 using Tank.Parts;
-using UI;
+using UI.Managers;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using Slot = Inventory.Slot;
 
 namespace Tank
@@ -18,6 +21,7 @@ namespace Tank
         protected double health;
         protected Attributes attributes;
         protected PlayerInventory inventory;
+        protected Abilities abilities;
         private void Awake()
         {
             inventory = new PlayerInventory();
@@ -26,14 +30,19 @@ namespace Tank
             components.Add(inventory);
             
             attributes = gameObject.GetOrAddComponent<Attributes>();
+            abilities = gameObject.GetOrAddComponent<Abilities>();
         }
         
         private void Start()
         {
+            PlayerManager.instance.player = this;
             attributes = gameObject.GetOrAddComponent<Attributes>();
             attributes.SetBaseValue(AttributeType.HEALTH, 10);
             health = attributes.GetValue(AttributeType.HEALTH);
             inventory.hullSlot.Set(new ItemStack(ItemManager.instance.HULL));
+
+            abilities.amount = 4;
+            HotbarManager.instance.UpdateAbilities(abilities);
         }
 
         protected void AddHitReceiverToCollidableObject(Transform parent)
@@ -89,10 +98,10 @@ namespace Tank
 
         private void Update()
         {
-            UIManager.instance.attributeText.text = $"{inventory.storageRows.Count}";
+            health -= 0.01;
+            if (health <= 0) health = 10;
+            HotbarManager.instance.UpdateHealth((float)health, 10);
         }
-
-        
     }
 }
 

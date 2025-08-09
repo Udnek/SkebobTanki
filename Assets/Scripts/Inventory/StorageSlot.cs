@@ -8,7 +8,7 @@ namespace Inventory
     {
         public class StorageSlot : Slot
         {
-            [CanBeNull] private StorageRow storage;
+            [CanBeNull] public StorageRow storage {get; private set;}
             public StorageSlot(PlayerInventory inventory, SlotType type) : base(inventory, type) { }
             
             protected override void InternalSet(ItemStack newItem, bool leftoverThisItem)

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UI
+namespace UI.Managers
 {
     // TODO USE ANIMATOR INSTEAD
     public class SmoothSizeChange : MonoBehaviour

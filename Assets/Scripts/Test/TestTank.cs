@@ -1,6 +1,7 @@
 using Inventory;
-using UI;
-using UI.Renderer;
+using UI.InventoryAgents;
+using UI.Managers;
+using UI.Managers.Managers;
 using UnityEngine;
 
 namespace Test
@@ -13,9 +14,8 @@ namespace Test
         {
             controls = new Controls();
             controls.Player.Inventory.Enable();
-            controls.Player.Inventory.performed += (context) => InventoryManager.instance.Toggle(
-                new ShopInventoryRenderer(new ShopInventory()),
-                new TankInventoryRenderer(GetComponent<Tank.Tank>().components.Get<PlayerInventory>())
+            controls.Player.Inventory.performed += (context) => LayoutMenuManager.instance.Toggle(
+                new TankInventoryAgent(GetComponent<Tank.Tank>().components.Get<PlayerInventory>())
             );
         }
     }

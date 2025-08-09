@@ -1,11 +1,13 @@
 using System.Collections.Generic;
+using Item;
 using Item.Components;
+using JetBrains.Annotations;
 
 namespace Inventory
 {
     public partial class PlayerInventory : Inventory
     {
-        public Slot hullSlot { get; }
+        public StorageSlot hullSlot { get; }
         public Slot[] backpack {get; } = new Slot[8];
         public List<StorageRow> storageRows { get; } = new();
 
@@ -29,6 +31,18 @@ namespace Inventory
                 return;
             }
             slot.SetNoLeftOver(null);
+        }
+
+        [CanBeNull]
+        public Slot AddToBackpack(ItemStack stack)
+        {
+            foreach (var slot in backpack)
+            {
+                if (slot.item != null) continue;
+                slot.SetNoLeftOver(stack);
+                return slot;
+            }
+            return null;
         }
     }
 }

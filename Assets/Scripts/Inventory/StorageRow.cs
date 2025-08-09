@@ -7,8 +7,6 @@ namespace Inventory
         public Slot[] slots { get; private set; }
         public PlayerInventory.StorageSlot parent { get; private set; }
         internal StorageRow(PlayerInventory.StorageSlot parent) => this.parent = parent;
-
-        //public bool isEmpty => slots.All(slot => slot.item == null);
         
         public void Initialize()
         {

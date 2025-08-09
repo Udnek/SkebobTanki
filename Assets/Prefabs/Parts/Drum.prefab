@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b4486f732d42a0b0487e957ba7dbd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <modelToOutline>k__BackingField: {fileID: 3942148633723605093}
   rotateAroundX: 90
 --- !u!1001 &4212055985150111028
 PrefabInstance:
@@ -96,13 +97,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c281faba2795d1c4ea14df1039f69051, type: 3}
       propertyPath: m_Name
-      value: model
+      value: Model
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c281faba2795d1c4ea14df1039f69051, type: 3}
+--- !u!1 &3942148633723605093 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c281faba2795d1c4ea14df1039f69051, type: 3}
+  m_PrefabInstance: {fileID: 4212055985150111028}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4467152910141311711 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c281faba2795d1c4ea14df1039f69051, type: 3}

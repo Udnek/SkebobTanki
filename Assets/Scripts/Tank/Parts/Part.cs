@@ -6,8 +6,10 @@ namespace Tank.Parts
 {
     public abstract class Part : MonoBehaviour
     {
-        public delegate void SlotConsumer(SlotType slot, Transform position);
-
+        protected delegate void SlotConsumer(SlotType slot, Transform position);
+        
+        [field: SerializeField] public GameObject modelToOutline { get; private set; }
+        
         public Tank tank { get; set; }
 
         public Dictionary<SlotType, Transform> slots { get; } = new();

@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace UI
+namespace UI.Managers
 {
     public class Tooltip : MonoBehaviour
     {
@@ -9,7 +9,7 @@ namespace UI
         [SerializeField] private RectTransform background;
         [SerializeField] private TextMeshProUGUI text;
         [SerializeField] private RectTransform textTransform;
-        private const float PADDING = 2;
+        private const float PADDING = 3;
         
         public void SetText(string str)
         {

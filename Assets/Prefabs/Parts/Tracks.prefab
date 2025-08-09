@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b4486f732d42a0b0487e957ba7dbd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <modelToOutline>k__BackingField: {fileID: 7866544941977859049}
   rotateAroundX: -90
 --- !u!1 &4779245846203980382
 GameObject:
@@ -252,7 +253,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3949452046002740317}
   m_Layer: 0
-  m_Name: tracks
+  m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

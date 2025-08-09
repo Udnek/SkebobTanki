@@ -22,6 +22,13 @@ public static class Utils
         return last;
     }
 
+    public static V GetAndRemove<K, V>(this Dictionary<K, V> dictionary, K key)
+    {
+        var value = dictionary[key];
+        dictionary.Remove(key);
+        return value;
+    }
+
     public static V GetOrAdd<K, V>(this Dictionary<K, V> dictionary, K key, V addValue)
     {
         var value = dictionary.GetValueOrDefault(key, addValue);
