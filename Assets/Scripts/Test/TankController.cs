@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
-public class TankController2 : MonoBehaviour
+public class TankController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float maxSpeed = 12f;
@@ -35,13 +35,13 @@ public class TankController2 : MonoBehaviour
         public Transform trackTransform;
         public Vector3[] localPoints;
         public bool isRightSide;
-        public Vector3 forwardDirection;
+        public Vector3 localLongAxis; // Главная ось гусеницы
     }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        rb.mass = 5000f; // Фиксированная масса 5000
+        rb.mass = 5000f;
         rb.centerOfMass = Vector3.down * 0.5f;
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -76,8 +76,7 @@ public class TankController2 : MonoBehaviour
         TankTrack newTrack = new TankTrack
         {
             trackTransform = trackTransform,
-            isRightSide = IsRightSide(trackTransform),
-            forwardDirection = trackTransform.forward
+            isRightSide = IsRightSide(trackTransform)
         };
 
         CalculateTrackPoints(newTrack);
@@ -92,25 +91,39 @@ public class TankController2 : MonoBehaviour
 
     private void CalculateTrackPoints(TankTrack track)
     {
-        Collider collider = track.trackTransform.GetComponent<Collider>();
+        BoxCollider collider = track.trackTransform.GetComponent<BoxCollider>();
         if (!collider)
         {
-            Debug.LogError($"No collider found on track: {track.trackTransform.name}");
+            Debug.LogError($"BoxCollider not found on track: {track.trackTransform.name}");
             track.localPoints = new Vector3[0];
             return;
         }
         
-        Bounds bounds = collider.bounds;
+        // Определяем главную ось гусеницы
+        Vector3 size = collider.size;
+        if (size.x >= size.y && size.x >= size.z)
+        {
+            track.localLongAxis = Vector3.right;
+        }
+        else if (size.y >= size.x && size.y >= size.z)
+        {
+            track.localLongAxis = Vector3.up;
+        }
+        else
+        {
+            track.localLongAxis = Vector3.forward;
+        }
+
+        // Генерация точек вдоль главной оси
+        Vector3 startPoint = -track.localLongAxis * size.magnitude * 0.5f;
+        Vector3 endPoint = track.localLongAxis * size.magnitude * 0.5f;
+        
         track.localPoints = new Vector3[pointsPerTrack];
-        
-        Vector3 startPoint = bounds.center - bounds.extents.z * track.forwardDirection;
-        Vector3 endPoint = bounds.center + bounds.extents.z * track.forwardDirection;
-        
         for (int i = 0; i < pointsPerTrack; i++)
         {
             float t = i / (float)(pointsPerTrack - 1);
-            Vector3 worldPoint = Vector3.Lerp(startPoint, endPoint, t);
-            track.localPoints[i] = track.trackTransform.InverseTransformPoint(worldPoint);
+            Vector3 localPoint = Vector3.Lerp(startPoint, endPoint, t);
+            track.localPoints[i] = localPoint;
         }
     }
 
@@ -128,10 +141,7 @@ public class TankController2 : MonoBehaviour
 
     private void Update()
     {
-        // Используем только Y-компонент для движения вперед/назад
         moveInput = moveAction.action.ReadValue<Vector2>().y;
-        
-        // Используем только X-компонент для поворота (A/D)
         turnInput = turnAction.action.ReadValue<Vector2>().x;
     }
 
@@ -165,7 +175,6 @@ public class TankController2 : MonoBehaviour
             }
         }
 
-        // Считаем танк "на земле" если есть хотя бы 25% точек контакта
         isGrounded = groundedPoints > (tracks.Count * pointsPerTrack * 0.25f);
     }
 
@@ -173,9 +182,13 @@ public class TankController2 : MonoBehaviour
     {
         if (!isGrounded) return;
 
+        // Вычисляем направления движения корпуса
+        Vector3 tankForward = Vector3.ProjectOnPlane(transform.forward, Vector3.up).normalized;
+        Vector3 tankRight = Vector3.ProjectOnPlane(transform.right, Vector3.up).normalized;
+
         foreach (TankTrack track in tracks)
         {
-            float forwardForce = trackForce * moveInput;
+            float forwardForceVal = trackForce * moveInput;
             float steeringMultiplier = track.isRightSide ? -1f : 1f;
             float steering = steeringForce * turnInput * steeringMultiplier;
 
@@ -188,16 +201,14 @@ public class TankController2 : MonoBehaviour
                     // Основное движение вперед/назад
                     if (Mathf.Abs(moveInput) > 0.1f)
                     {
-                        // Учитываем только горизонтальную составляющую
-                        Vector3 horizontalForward = Vector3.ProjectOnPlane(track.forwardDirection, Vector3.up).normalized;
-                        rb.AddForceAtPosition(horizontalForward * forwardForce, worldPoint);
-                        Debug.DrawRay(worldPoint, horizontalForward * forwardForce * 0.001f, Color.green);
+                        rb.AddForceAtPosition(tankForward * forwardForceVal, worldPoint);
+                        Debug.DrawRay(worldPoint, tankForward * forwardForceVal * 0.001f, Color.green);
                     }
                     
                     // Поворот
                     if (Mathf.Abs(turnInput) > 0.1f)
                     {
-                        Vector3 steeringDirection = track.trackTransform.right * steeringMultiplier;
+                        Vector3 steeringDirection = tankRight * steeringMultiplier;
                         rb.AddForceAtPosition(steeringDirection * steering, worldPoint);
                         Debug.DrawRay(worldPoint, steeringDirection * steering * 0.001f, Color.blue);
                     }
@@ -224,7 +235,7 @@ public class TankController2 : MonoBehaviour
                     rb.AddForceAtPosition(stabilizationForce, worldPoint);
                 }
                 
-                // Дополнительная стабилизация по крену
+                // Стабилизация крена
                 Vector3 localPos = transform.InverseTransformPoint(worldPoint);
                 float tiltFactor = Mathf.Abs(localPos.x) * stabilizationFactor;
                 Vector3 antiRollForce = Vector3.up * tiltFactor * stabilityForce * 0.3f;
@@ -235,7 +246,6 @@ public class TankController2 : MonoBehaviour
 
     private void ApplyBraking()
     {
-        // Торможение только по горизонтальной плоскости
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         Vector3 brakingDirection = -horizontalVelocity.normalized;
         float brakingMagnitude = Mathf.Min(brakingForce * Time.fixedDeltaTime, horizontalVelocity.magnitude);
@@ -245,7 +255,6 @@ public class TankController2 : MonoBehaviour
 
     private void ApplySpeedLimits()
     {
-        // Ограничение скорости только по горизонтали
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
         Vector3 forwardDirection = new Vector3(transform.forward.x, 0, transform.forward.z).normalized;
         
