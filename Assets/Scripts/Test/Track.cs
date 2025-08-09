@@ -1,5 +1,6 @@
 using Tank.Parts;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Test
 {
@@ -7,62 +8,56 @@ namespace Test
     {
         private Rigidbody tankRigidbody;
         private Controls controls;
-        private bool isLeftTrack;
+        [SerializeField] private bool isLeftTrack;
 
         [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private float FIRST_TRACK_STATUS = 1f;
-        [SerializeField] private float SECOND_TRACK_STATUS = 1f; 
-        [SerializeField] float steeringForceMultiplier = 1f;
-        [SerializeField] private BoxCollider tankTrackTriggerCollider;
+        private readonly float FIRST_TRACK_STATUS = 1f;
+        private readonly float SECOND_TRACK_STATUS = 0.1f; 
+        private float steeringForceMultiplier = 1f;
+        [FormerlySerializedAs("tankTrackTriggerCollider")] [SerializeField] private BoxCollider hitbox;
         
-        private float trackMovementSpeedRight;
-        private float trackMovementSpeedLeft;
+        private float speedRight;
+        private float speedLeft;
         
-        private Vector3 trackPositionLocal;
-        private Vector3 trackPositionWorld;
+        //private Vector3 trackPositionLocal;
+        //private Vector3 trackPositionWorld;
 
         private void Awake()
         {
-            tankRigidbody = GetComponent<Part>().tank.GetComponent<Rigidbody>();
             controls = new Controls();
-            DefineTrackSide();
+            controls.Player.Move.Enable();
         }
 
         private void Start()
         {
+            tankRigidbody = GetComponent<Part>().tank.GetComponent<Rigidbody>();
+            DefineTrackSide();
             if (groundLayer.value == 0)
                 groundLayer = LayerMask.GetMask("Default");
         }
         
-        private void OnEnable()
-        {
-            controls.Player.Move.Enable();
-            controls.Player.Turn.Enable();
-        }
-
         private void DefineTrackSide()
         {
-            Vector3 centerInTankSpace = GetComponent<Part>().tank.transform.position;
-            isLeftTrack = centerInTankSpace.x < 0;
+            // Vector3 centerInTankSpace = GetComponent<Part>().tank.transform.position;
+            // isLeftTrack = centerInTankSpace.x < 0;
             
             if (isLeftTrack)
             {
-                trackMovementSpeedRight = FIRST_TRACK_STATUS;
-                trackMovementSpeedLeft = SECOND_TRACK_STATUS;
+                speedRight = FIRST_TRACK_STATUS;
+                speedLeft = SECOND_TRACK_STATUS;
             }
             else
             {
-                trackMovementSpeedRight = SECOND_TRACK_STATUS;
-                trackMovementSpeedLeft = FIRST_TRACK_STATUS;
+                speedRight = SECOND_TRACK_STATUS;
+                speedLeft = FIRST_TRACK_STATUS;
             }
         }
 
         private void FixedUpdate()
         {
-            Vector2 readMoveVector = controls.Player.Move.ReadValue<Vector2>();
-            Vector2 readTurnVector = controls.Player.Turn.ReadValue<Vector2>();
-            if (CheckTrackGrounded(tankTrackTriggerCollider)) 
-                TrackMovement(readMoveVector, readTurnVector);
+            Vector2 input = controls.Player.Move.ReadValue<Vector2>();
+            if (CheckTrackGrounded(hitbox)) 
+                TrackMovement(input);
         }
         
         private bool CheckTrackGrounded(BoxCollider trackCollider)
@@ -72,35 +67,34 @@ namespace Test
             Vector3 center = trackCollider.transform.TransformPoint(trackCollider.center);
             Vector3 halfExtents = trackCollider.size * 0.5f;
             Quaternion rotation = trackCollider.transform.rotation;
-        
-            return Physics.CheckBox(
-                center, 
-                halfExtents, 
-                rotation, 
-                groundLayer
-            );
+
+            var isGround = Physics.CheckBox(center, halfExtents, rotation);
+            //Debug.Log(isGround);
+            return isGround;
         }
 
-        private void TrackMovement(Vector2 readMoveVector, Vector2 readTurnVector)
+        private void TrackMovement(Vector2 input)
         {
-            float readMoveValue = readMoveVector.y;
-            float readTurnValue = readTurnVector.x;
-            trackPositionWorld = transform.TransformPoint(trackPositionLocal);
-            Vector3 trackForce = transform.forward * (readMoveValue * steeringForceMultiplier);
-            if (readMoveValue != 0)
+            //Debug.Log(readMoveVector);
+            //Debug.Log(readTurnVector);
+            float forward = input.y;
+            float rightward = input.x;
+            Vector3 trackForce;
+            if (forward != 0)
             {
-                if (readTurnValue != 0)
-                    steeringForceMultiplier = (readTurnValue > 0) ? trackMovementSpeedRight : trackMovementSpeedLeft;
-                trackForce = transform.forward * (readMoveValue * steeringForceMultiplier);
+                trackForce = transform.forward * forward;
+                if (rightward != 0) steeringForceMultiplier = rightward > 0 ? speedRight : speedLeft;
+                else steeringForceMultiplier = 1;
+                trackForce *= steeringForceMultiplier * 10;
             }
-            else
+            else if (rightward != 0)
             {
-                if (readTurnValue > 0 || readTurnValue < 0)
-                    trackForce = (isLeftTrack)
-                        ? transform.forward * (readTurnValue * 1f)
-                        : transform.forward * (-1 * readTurnValue * 1f);
+                trackForce = transform.forward * ((isLeftTrack ? 1 : -1) * 20);
+                //Debug.Log(trackForce);
             }
-            tankRigidbody.AddForceAtPosition(trackForce, trackPositionWorld);
+            else trackForce = new();
+            
+            tankRigidbody.AddForceAtPosition(trackForce, transform.TransformPoint(hitbox.center));
         }
     }
 }
