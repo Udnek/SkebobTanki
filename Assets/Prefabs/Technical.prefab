@@ -52,6 +52,7 @@ GameObject:
   - component: {fileID: 4311708522878303594}
   - component: {fileID: 2690816514269676596}
   - component: {fileID: 1385711345433913799}
+  - component: {fileID: 2632771154736856787}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -88,7 +89,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <attributeText>k__BackingField: {fileID: 2132276603295473306}
   <speedText>k__BackingField: {fileID: 4595862406552558250}
-  <tooltipPrefab>k__BackingField: {fileID: 5733893731095514266, guid: 6a4911c0d67186d46a94d32d38c38141, type: 3}
 --- !u!114 &7222198358966494218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,11 +102,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <itemStackPrefab>k__BackingField: {fileID: -1143328874951581954, guid: c83200d8351f0c14693c9c6088f82961, type: 3}
+  <slotTypePrefab>k__BackingField: {fileID: -1143328874951581954, guid: c83200d8351f0c14693c9c6088f82961, type: 3}
+  <slotProviderPrefab>k__BackingField: {fileID: 2412648017199828221, guid: 22aef52c4561ca542a5b47bbce83c46f, type: 3}
+  <slotPrefab>k__BackingField: {fileID: 5357981777525248237, guid: ee8f1aa8a8726464dafe6e3051242a7d, type: 3}
+  <selectorPrefab>k__BackingField: {fileID: 5809100859609804486, guid: 0b1eb9cdcb8b77f49ba5309b16b8ab6f, type: 3}
   <hullSlotsLayer>k__BackingField: {fileID: 6460019429400764065}
   <storageSlotsLayer>k__BackingField: {fileID: 8197550517717445062}
   <backpackSlotsLayer>k__BackingField: {fileID: 102279236450707725}
-  <slotPrefab>k__BackingField: {fileID: 5357981777525248237, guid: ee8f1aa8a8726464dafe6e3051242a7d, type: 3}
-  <selectorPrefab>k__BackingField: {fileID: 5809100859609804486, guid: 0b1eb9cdcb8b77f49ba5309b16b8ab6f, type: 3}
 --- !u!114 &1688044496273116139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +184,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tooltipLayer: {fileID: 461913163976261221}
   <draggableLayer>k__BackingField: {fileID: 7910554732851840071}
+  <neonTooltipPrefab>k__BackingField: {fileID: 5733893731095514266, guid: 6a4911c0d67186d46a94d32d38c38141, type: 3}
+  <metalTooltipPrefab>k__BackingField: {fileID: 5733893731095514266, guid: 9f9d8a925e809c14dbfa3e28974e5117, type: 3}
 --- !u!114 &1385711345433913799
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +200,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <slotPrefab>k__BackingField: {fileID: 781728188252089656, guid: 7d378f21a291f4c4392a7b5dde778bf2, type: 3}
   <layer>k__BackingField: {fileID: 206801474105718041}
+--- !u!114 &2632771154736856787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 606383607832590200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f5d810e36c34b2f96783e68e97cbfed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <HULL>k__BackingField: {fileID: 11400000, guid: efe31cf57af599546a0a1b0b361f68ec, type: 2}
+  <BACKPACK>k__BackingField: {fileID: 11400000, guid: 2d887330037dab6448b6c0f7afe6cc19, type: 2}
+  <BOTTOM>k__BackingField: {fileID: 11400000, guid: 54b8a2854d677b748be7732fcd5bb5f1, type: 2}
+  <TOP>k__BackingField: {fileID: 11400000, guid: ddbd7dff26befa541948efd3875a4ec8, type: 2}
+  <LEFT>k__BackingField: {fileID: 11400000, guid: 130e5162f7d30304b9fa293c6debd980, type: 2}
+  <RIGHT>k__BackingField: {fileID: 11400000, guid: a1f7e6195bb10bc4db8c2bf350aec17d, type: 2}
+  <FRONT>k__BackingField: {fileID: 11400000, guid: 1a4599305a91bf34686d6168fd33016f, type: 2}
+  <BACK>k__BackingField: {fileID: 11400000, guid: 1f57142df66d72f4c8fd5747f7b0444e, type: 2}
 --- !u!1 &1255904789026109770
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,9 +6,9 @@ namespace UI
     public class Selector : MonoBehaviour
     {
         public void Destroy() => Destroy(gameObject);
-        public Selector InstantiateNew()
+        public Selector InstantiateNew(Transform parent)
         {
-            var selector = Instantiate(this, TemporalManager.instance.draggableLayer);
+            var selector = Instantiate(this, parent);
             InventoryManager.instance.currentSelector = selector;
             return selector;
         }

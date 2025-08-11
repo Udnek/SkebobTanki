@@ -1,5 +1,4 @@
-﻿using System;
-using UI.InventoryAgents;
+﻿using UI.InventoryAgents;
 using UnityEngine;
 
 namespace UI.Managers.Managers

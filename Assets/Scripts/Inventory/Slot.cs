@@ -1,5 +1,5 @@
-﻿using Item;
-using Item.Components;
+﻿using Inventory.SlotTypes;
+using Item;
 using JetBrains.Annotations;
 
 namespace Inventory
@@ -8,16 +8,20 @@ namespace Inventory
     {
         public Inventory inventory { get; }
         public SlotType type { get; private set; }
-        [CanBeNull] public Slot parent { get; set; }
+
+        [CanBeNull] private Slot parentField;
         public bool stillExists { get; private set; } = true;
         [CanBeNull] public ItemStack item { get; private set; }
         public Slot(Inventory inventory, SlotType type, Slot parent = null)
         {
             this.inventory = inventory;
             this.type = type;
-            this.parent = parent;
+            Parent(parent);
         }
 
+        [CanBeNull] public Slot Parent() => parentField;
+        public void Parent(Slot parent) => parentField = parent;
+        
         public void Destroy()
         {
             if (item != null) inventory.TakeLeftover(this);
@@ -26,12 +30,13 @@ namespace Inventory
         
         public void Swap(Slot withSlot)
         {
-            if (withSlot == this) return;
+            if (this == withSlot) return;
             var thisItem = item;
             var withItem = withSlot.item;
             
             withSlot.item = thisItem;
             item = withItem;
+            
             inventory.OnItemSwapped(this, withSlot);
             withSlot.inventory.OnItemSwapped(withSlot, this);
 

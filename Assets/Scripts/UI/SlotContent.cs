@@ -1,5 +1,4 @@
-﻿using Item;
-using UnityEngine;
+﻿using UnityEngine;
 using Image = UnityEngine.UI.Image;
 
 namespace UI

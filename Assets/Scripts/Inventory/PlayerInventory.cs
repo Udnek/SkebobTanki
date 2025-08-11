@@ -1,22 +1,22 @@
 using System.Collections.Generic;
+using Inventory.SlotTypes;
 using Item;
-using Item.Components;
 using JetBrains.Annotations;
 
 namespace Inventory
 {
     public partial class PlayerInventory : Inventory
     {
-        public StorageSlot hullSlot { get; }
+        public ProvidingSlot hullSlot { get; }
         public Slot[] backpack {get; } = new Slot[8];
         public List<StorageRow> storageRows { get; } = new();
 
         public PlayerInventory()
         {
-            hullSlot = new StorageSlot(this, SlotType.HULL);
+            hullSlot = new ProvidingSlot(this, SlotManager.instance.HULL);
             for (var i = 0; i < backpack.Length; i++)
             {
-                backpack[i] = new Slot(this, SlotType.BACKPACK);
+                backpack[i] = new Slot(this, SlotManager.instance.BACKPACK);
             }
         }
         

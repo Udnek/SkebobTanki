@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using Ability;
 using Attribute;
 using ECS;
 using Inventory;
+using Inventory.SlotTypes;
 using Item;
-using Item.Components;
 using Tank.Parts;
 using UI.Managers;
 using UnityEngine;
-using Random = UnityEngine.Random;
 using Slot = Inventory.Slot;
 
 namespace Tank
@@ -39,7 +37,12 @@ namespace Tank
             attributes = gameObject.GetOrAddComponent<Attributes>();
             attributes.SetBaseValue(AttributeType.HEALTH, 10);
             health = attributes.GetValue(AttributeType.HEALTH);
+            
+            // DEFAULT ITEMS
             inventory.hullSlot.Set(new ItemStack(ItemManager.instance.HULL));
+            inventory.hullSlot.row!.GetByType(SlotManager.instance.TOP)!.Set(new ItemStack(ItemManager.instance.TURRET));
+            inventory.hullSlot.row!.GetByType(SlotManager.instance.BOTTOM)!.Set(new ItemStack(ItemManager.instance.TRACKS));
+            inventory.hullSlot.row!.GetByType(SlotManager.instance.TOP)!.row!.GetByType(SlotManager.instance.FRONT)!.Set(new ItemStack(ItemManager.instance.GUN_BARREL));
 
             abilities.amount = 4;
             HotbarManager.instance.UpdateAbilities(abilities);
@@ -63,7 +66,7 @@ namespace Tank
             slot.item.components.Get<InitiatedPart>()?.Destroy();
             var newPhysicalPart = slot.item.type.components.Get<PartPrefab>();
             if (newPhysicalPart == null) return;
-            if (slot.type == SlotType.HULL)
+            if ((ConstructableSlotType) slot.type == SlotManager.instance.HULL)
             {
                 var initiatedPart = slot.item.components.GetOrAdd(() => new InitiatedPart());
                 var part = Instantiate(newPhysicalPart.prefab, transform).GetComponent<Part>();
@@ -71,7 +74,7 @@ namespace Tank
                 OnPartSet(part);
             }
             else {
-                var providerPart = slot.parent?.item?.components?.Get<InitiatedPart>()?.script;
+                var providerPart = slot.Parent()?.item?.components?.Get<InitiatedPart>()?.script;
                 if (providerPart == null) return;
                 var position = providerPart.slots.GetValueOrDefault(slot.type, null);
                 if (position is null) return;

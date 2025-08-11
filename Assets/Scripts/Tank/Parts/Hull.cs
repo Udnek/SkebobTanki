@@ -1,4 +1,4 @@
-﻿using Item.Components;
+﻿using Inventory.SlotTypes;
 using UnityEngine;
 
 namespace Tank.Parts
@@ -13,10 +13,10 @@ namespace Tank.Parts
 
         protected override void AddSlots(SlotConsumer consumer)
         {
-            consumer(SlotType.BOTTOM, bottomPosition);
-            consumer(SlotType.TOP, topPosition);
-            consumer(SlotType.LEFT, leftPosition);
-            consumer(SlotType.RIGHT, rightPosition);
+            consumer(SlotManager.instance.BOTTOM, bottomPosition);
+            consumer(SlotManager.instance.TOP, topPosition);
+            consumer(SlotManager.instance.LEFT, leftPosition);
+            consumer(SlotManager.instance.RIGHT, rightPosition);
         }
     }
 }

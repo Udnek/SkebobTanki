@@ -7,7 +7,6 @@ namespace Item
         string name { get; }
         string description { get; }
         Sprite icon { get; }
-
         public void Awake();
     }
 }

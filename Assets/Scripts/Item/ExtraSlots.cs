@@ -1,6 +1,6 @@
 ﻿using System;
 using ECS;
-using Item.Components;
+using Inventory.SlotTypes;
 
 namespace Item
 {

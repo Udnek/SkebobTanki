@@ -1,5 +1,4 @@
-﻿using System;
-using Inventory;
+﻿using Inventory;
 using Item;
 using UI.Slots;
 using UnityEngine;
@@ -33,21 +32,19 @@ namespace UI.Managers
                 column++;
             }
         }
-
         public void OnSlotClicked(AbstractSlot abstractSlot)
         {
             var backpack = PlayerManager.instance.player.components.Get<PlayerInventory>()
                 .AddToBackpack(new ItemStack(abstractSlot.AsShopSlot()!.item));
             if (backpack is null) return;
-            TemporalManager.instance.SwapThisSlotAnimation(InventoryManager.instance.GetSlot(backpack), abstractSlot);
+            TemporalManager.instance.cursorSlot = InventoryManager.instance.GetSlot(backpack);
         }
-
         public void OnSlotHovered(AbstractSlot abstractSlot)
         {
             var manager = TemporalManager.instance;
             var slot = abstractSlot.AsShopSlot()!;
             if (slot.isEmpty) return;
-            var tooltip = manager.CreateEmptyTooltip();
+            var tooltip = manager.CreateEmptyTooltip(TemporalManager.TooltipType.NEON);
             var item = slot.item;
             if (string.IsNullOrEmpty(item.description)) tooltip.SetText(item.name);
             else tooltip.SetText(item.name + "\n\n" + item.description);

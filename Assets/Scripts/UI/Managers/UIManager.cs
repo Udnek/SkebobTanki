@@ -9,8 +9,6 @@ namespace UI.Managers
         [Header("Text")]
         [field: SerializeField] public TextMeshProUGUI attributeText { get; private set; }
         [field: SerializeField] public TextMeshProUGUI speedText { get; private set; }
-        [Header("Prefabs")]
-        [field: SerializeField] public Tooltip tooltipPrefab {get; private set;}  
         private void Awake() => instance = this;
     }
 }

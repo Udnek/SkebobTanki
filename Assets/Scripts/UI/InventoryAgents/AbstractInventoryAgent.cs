@@ -36,35 +36,31 @@ namespace UI.InventoryAgents
         {
             var uiSlot = slots[slot];
             uiSlot.UpdateIcon();
-            uiSlot.ResetIconPosition();
+            uiSlot.PutBack();
         }
 
         public void OnItemSwapped(Slot thisSlot, Slot withSlot)
-        {
-            var manager = TemporalManager.instance;
+        { 
             var withUiSlot = InventoryManager.instance.GetSlot(withSlot);
             var thisUiSlot = slots[thisSlot];
             if (withUiSlot is null) thisUiSlot.UpdateIcon();
-            else manager.SwapThisSlotAnimation(thisUiSlot, withUiSlot, 
+            else TemporalManager.instance.SwapThisSlotAnimation(thisUiSlot, withUiSlot, 
                 () =>
                 {
                     thisUiSlot.UpdateIcon();
                     var list = slotsToAppear.GetValueOrDefault(thisSlot, null);
                     if (list is null) return;
                     foreach (var slot in list)
-                    {
                         if (slot !=null) SmoothSizeChange.Run(slot.gameObject, 0.2f, 1f);
-                    }
                     slotsToAppear.Remove(thisSlot);
                 });
         }
-
         public abstract void OnRowRemoved(StorageRow row);
         public abstract void OnRowAdded(StorageRow row);
         public void OnItemChanged(Slot slot, ItemStack oldItem) { }
-        
         public virtual void OnSlotClicked(AbstractSlot abstractSlot)
         {
+            if (abstractSlot.type == AbstractSlot.Type.PROVIDER) return;
             var slot = abstractSlot.AsInventorySlot()!;
             if (!slot.slot.stillExists) return;
             
@@ -77,7 +73,7 @@ namespace UI.InventoryAgents
                 if (cursorSlot == slot)
                 {
                     slot.UpdateIcon();
-                    slot.ResetIconPosition();
+                    slot.PutBack();
                 }
                 else slot.slot.Swap(cursorSlot.slot);
                 TemporalManager.instance.cursorSlot = null;
@@ -88,12 +84,19 @@ namespace UI.InventoryAgents
         public virtual void OnSlotHovered(AbstractSlot abstractSlot)
         {
             var manager = TemporalManager.instance;
+
             var slot = abstractSlot.AsInventorySlot()!;
-            if (slot.isEmpty) return;
-            var tooltip = manager.CreateEmptyTooltip();
-            var item = slot.slot.item!.type;
-            if (string.IsNullOrEmpty(item.description)) tooltip.SetText(item.name);
-            else tooltip.SetText(item.name + "\n\n" + item.description);
+            if (abstractSlot.isEmpty)
+                manager.CreateEmptyTooltip(TemporalManager.TooltipType.NEON).SetText(slot!.slot.type.name);
+            else
+            {
+                var tooltip = manager.CreateEmptyTooltip(abstractSlot.type == AbstractSlot.Type.PROVIDER
+                    ? TemporalManager.TooltipType.NEON
+                    : TemporalManager.TooltipType.METAL);
+                var item = slot.slot.item!.type;
+                if (string.IsNullOrEmpty(item.description)) tooltip.SetText(item.name);
+                else tooltip.SetText(item.name + "\n\n" + item.description);
+            }
         }
         public virtual void OnSlotUnhovered(AbstractSlot slot)
         {

@@ -1,6 +1,5 @@
 ﻿using Item;
 using UI.Managers;
-using UnityEngine;
 
 namespace UI.Slots
 {

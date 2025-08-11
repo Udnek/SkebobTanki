@@ -15,4 +15,4 @@ MonoBehaviour:
   <partPrefab>k__BackingField: {fileID: -6245968438897650698, guid: 30405fae9783c9841b985c5dcbd9761d, type: 3}
   <name>k__BackingField: Drum
   <description>k__BackingField: 
-  <iconTexture>k__BackingField: {fileID: 2800000, guid: e783131d0c0331843b6d83fbd736f218, type: 3}
+  <icon>k__BackingField: {fileID: 21300000, guid: e783131d0c0331843b6d83fbd736f218, type: 3}

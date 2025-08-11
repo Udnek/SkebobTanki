@@ -2,7 +2,6 @@
 using UI.Managers;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace UI.Slots
 {
@@ -16,22 +15,24 @@ namespace UI.Slots
         
         public SlotListener listener;
 
-        public void ResetIconPosition()
+        public virtual void PutBack()
         {
-            if (icon != null) icon.transform.localPosition = Vector3.zero;
+            if (icon is not null) icon.transform.localPosition = Vector3.zero;
+            UpdateIcon();
         }
+
         public abstract void UpdateIcon();
         
-        public void Pickup()
+        public virtual void Pickup()
         {
             if (icon is null) return;
-            icon!.GetComponent<RectTransform>().sizeDelta *= new Vector2(1.2f, 1.2f);
+            icon!.transform.localScale *= 1.2f;
             TemporalManager.instance.AddToDraggableLayer(icon.gameObject);
         }
 
-        public void Clear()
+        public virtual void Clear()
         {
-            if (icon !=null) icon.Destroy();
+            icon?.Destroy();
             icon = null;
         }
 
@@ -56,9 +57,11 @@ namespace UI.Slots
         [CanBeNull] public InventorySlot AsInventorySlot() => this as InventorySlot;
         [CanBeNull] public AbilitySlot AsAbilitySlot() => this as AbilitySlot;
         [CanBeNull] public ShopSlot AsShopSlot() => this as ShopSlot;
+        [CanBeNull] public ProviderSlot AsProviderSlot() => this as ProviderSlot;
 
         public enum Type
         {
+            PROVIDER,
             INVENTORY,
             ABILITY,
             SHOP

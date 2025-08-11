@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace UI.Managers
+namespace UI
 {
     public class SmoothMover : MonoBehaviour
     {
@@ -15,7 +15,7 @@ namespace UI.Managers
             {
                 updatePosition.Invoke();
                 if (!shouldStop()) return;
-                Destroy(obj.GetComponent<SmoothMover>());
+                Destroy(component);
                 onArrival?.Invoke();
             };
         }

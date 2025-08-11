@@ -1,31 +1,33 @@
-﻿using Item;
-using Item.Components;
+﻿using Inventory.SlotTypes;
+using Item;
 using JetBrains.Annotations;
 
 namespace Inventory
 {
     public partial class PlayerInventory
     {
-        public class StorageSlot : Slot
+        public class ProvidingSlot : Slot
         {
-            [CanBeNull] public StorageRow storage {get; private set;}
-            public StorageSlot(PlayerInventory inventory, SlotType type) : base(inventory, type) { }
-            
+            [CanBeNull] public StorageRow row {get; private set;}
+            public ProvidingSlot(PlayerInventory inventory, SlotType type) : base(inventory, type) { }
+
+            public new ProvidingSlot Parent() => base.Parent() as ProvidingSlot;
+
             protected override void InternalSet(ItemStack newItem, bool leftoverThisItem)
             {
                 base.InternalSet(newItem, leftoverThisItem);
-                if (storage != null)
+                if (row != null)
                 {
-                    storage.Destroy();
-                    (inventory as PlayerInventory)!.storageRows.Remove(storage);
-                    inventory.OnRowRemoved(storage);
-                    storage = null;
+                    row.Destroy();
+                    (inventory as PlayerInventory)!.storageRows.Remove(row);
+                    inventory.OnRowRemoved(row);
+                    row = null;
                 }
                 if (!(item?.type?.components?.Has<ExtraSlots>() ?? false)) return;
-                storage = new StorageRow(this);
-                (inventory as PlayerInventory)!.storageRows.Add(storage);
-                storage.Initialize();
-                inventory.OnRowAdded(storage);
+                row = new StorageRow(this);
+                (inventory as PlayerInventory)!.storageRows.Add(row);
+                row.Initialize();
+                inventory.OnRowAdded(row);
             }
         }
     }

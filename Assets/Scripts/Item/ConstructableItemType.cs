@@ -12,10 +12,7 @@ namespace Item
         [field: SerializeField] public Part partPrefab {get; private set; }
         [field: SerializeField] public new string name { get; protected set; }
         [field: SerializeField] public string description { get; protected set; }
-        [field: SerializeField] public Texture2D iconTexture { get; protected set; }
-
-        public Sprite icon => 
-            Sprite.Create(iconTexture, new Rect(0f, 0f, iconTexture.width, iconTexture.height), Vector2.zero);
+        [field: SerializeField] public Sprite icon { get; protected set; }
 
         public void Awake()
         {

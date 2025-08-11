@@ -1,4 +1,4 @@
-﻿using Item.Components;
+﻿using Inventory.SlotTypes;
 using UnityEngine;
 
 namespace Tank.Parts
@@ -10,7 +10,7 @@ namespace Tank.Parts
 
         protected override void AddSlots(SlotConsumer consumer)
         {
-            consumer(SlotType.FRONT, barrelPosition);
+            consumer(SlotManager.instance.FRONT, barrelPosition);
         }
     }
 }

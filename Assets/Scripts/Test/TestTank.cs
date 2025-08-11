@@ -1,6 +1,5 @@
 using Inventory;
 using UI.InventoryAgents;
-using UI.Managers;
 using UI.Managers.Managers;
 using UnityEngine;
 

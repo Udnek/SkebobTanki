@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using Inventory;
 using JetBrains.Annotations;
 using UI.InventoryAgents;
 using UI.Slots;
@@ -13,11 +12,14 @@ namespace UI.Managers
     {
         public static InventoryManager instance { get; private set; }
         [field: SerializeField] public SlotContent itemStackPrefab { get; private set; }
+        [field: SerializeField] public SlotContent slotTypePrefab { get; private set; }
+        [field: SerializeField] public ProviderSlot slotProviderPrefab { get; private set; }
+        [field: SerializeField] public InventorySlot slotPrefab {get; private set;}
+        [field: SerializeField] public Selector selectorPrefab { get; private set; }
+        
         [field: SerializeField] public Transform hullSlotsLayer {get; private set;}
         [field: SerializeField] public Transform storageSlotsLayer {get; private set;}
         [field: SerializeField] public Transform backpackSlotsLayer {get; private set;}
-        [field: SerializeField] public InventorySlot slotPrefab {get; private set;}
-        [field: SerializeField] public Selector selectorPrefab { get; private set; }
 
         private InventoryAgent[] inventoryRenderers = Array.Empty<InventoryAgent>();
         
@@ -45,7 +47,7 @@ namespace UI.Managers
         }
         
         private void Awake() => instance = this;
-        [CanBeNull] public InventorySlot GetSlot(Inventory.Slot slot)
+        [CanBeNull] public InventorySlot GetSlot(Slot slot)
         {
             return inventoryRenderers
                 .Select(renderer => renderer.GetSlot(slot))
